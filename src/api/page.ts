@@ -1,7 +1,6 @@
 export interface ResponseData {
   code: number
   message: string
-  // ok: boolean
 }
 
 export interface pageData<T> extends ResponseData {

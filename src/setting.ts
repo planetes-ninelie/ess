@@ -2,5 +2,4 @@
 export default {
   title: import.meta.env.VITE_APP_TITLE, //项目的标题
   logo: '/logo.svg', //项目logo的设置
-  logoHidden: true, //logo组件是否隐藏
 }

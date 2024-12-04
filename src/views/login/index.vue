@@ -3,7 +3,6 @@
     <transition name="el-zoom-in-center">
       <el-form class="login_form" :model="loginForm" :rules="rules" ref="loginForms" v-show="isLogin">
         <h1>{{ title }}</h1>
-        <h2 class="animation">Hello!欢迎使用{{ title }}</h2>
         <el-form-item class="item" prop="username">
           <el-input class="input" :prefix-icon="User" placeholder="请输入账号" v-model="loginForm.username"></el-input>
         </el-form-item>
@@ -166,61 +165,11 @@ const register = () => isLogin.value = !isLogin.value
   text-align: center;
 
   h1 {
+    margin: 20px 0;
     color: black;
     font-size: 40px;
     font-weight: 600;
-  }
 
-  h2 {
-    font-size: 20px;
-    color: #13c2c2;
-    font-weight: 600;
-    margin-top: 20px;
-    margin-bottom: 30px;
-  }
-
-  .animation {
-    position: relative;
-    margin: 20px auto;
-    overflow: hidden;
-    width: 0;
-    white-space: nowrap;
-    animation: width 3s steps(30) forwards;
-
-    &::after {
-      content: '';
-      position: absolute;
-      right: 0px;
-      height: 20px;
-      border-right: 2px solid #119a9a;
-      animation: showInfinite 0.1s 30 both;
-
-      @keyframes showInfinite {
-
-        0%,
-        50% {
-          opacity: 1;
-        }
-
-        100% {
-          opacity: 0;
-        }
-      }
-    }
-
-    @keyframes width {
-      0% {
-        width: 0;
-      }
-
-      100% {
-        width: 270px;
-      }
-    }
-  }
-
-  &:last-child .animation::after {
-    animation: showInfinite 0.1s 30 both;
   }
 
   .item {

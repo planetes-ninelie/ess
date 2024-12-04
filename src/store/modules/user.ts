@@ -13,7 +13,6 @@ import { constantRoute, asyncRoute, anyRoute } from '@/router/routes'
 //引入深拷贝方法
 import cloneDeep from 'lodash/cloneDeep'
 import router from '@/router'
-import useAvatarStore from './avatar'
 import pinia from '..'
 import { ElMessage } from 'element-plus'
 
@@ -29,8 +28,6 @@ function filterAsyncRoute(asyncRoute: any, routes: any) {
   })
 }
 
-const avatarStore = useAvatarStore(pinia)
-
 //创建用户小仓库
 const useUserStore = defineStore('User', {
   //小仓库存储数据的地方
@@ -40,7 +37,6 @@ const useUserStore = defineStore('User', {
       menuRoutes: constantRoute, //仓库储存生成菜单需要数组
       username: '',
       userId: 0,
-      avatar: '',
       buttons: [],
     }
   },
@@ -48,10 +44,11 @@ const useUserStore = defineStore('User', {
   actions: {
     //用户登录的方法
     async userLogin(data: loginFormData) {
-      const result: loginResponseData = await reqLogin(data)
+      // const result: loginResponseData = await reqLogin(data)
+      const result = { code: '000000' }
       if (result.code == '000000') {
-        this.token = result.data as string
-        SET_TOKEN(result.data as string)
+        // this.token = result.data as string
+        // SET_TOKEN(result.data as string)
         return 'ok'
       } else {
         return Promise.reject(new Error(result.message))
@@ -60,15 +57,14 @@ const useUserStore = defineStore('User', {
     //获取用户信息方法
     async userInfo() {
       //获取用户信息进行存储仓库当中
-      const result: userInfoResponseData = await reqUserInfo()
+      // const result: userInfoResponseData = await reqUserInfo()
+      const result = { code: '000000' }
       //如果获取用户信息成功，存储一下用户信息
       if (result.code == '000000') {
-        this.username = result.data.username
-        this.avatar = result.data.image
-        const buttons = result.data.rolePermissions.split(',')
-        this.buttons = buttons
-        this.userId = result.data.id
-        await avatarStore.setAvatar(this.avatar)
+        // this.username = result.data.username
+        // const buttons = result.data.rolePermissions.split(',')
+        // this.buttons = buttons
+        // this.userId = result.data.id
 
         const routesTest = [
           'Acl',
@@ -90,9 +86,9 @@ const useUserStore = defineStore('User', {
         )
         // const userAsyncRoutes = [...routesTest]
         this.menuRoutes = [...constantRoute, ...userAsyncRoutes, ...anyRoute]
-        ;[...userAsyncRoutes, ...anyRoute].forEach((route: any) => {
-          router.addRoute(route)
-        })
+          ;[...userAsyncRoutes, ...anyRoute].forEach((route: any) => {
+            router.addRoute(route)
+          })
         return 'ok'
       } else {
         return Promise.reject(new Error(result.message))
@@ -100,14 +96,11 @@ const useUserStore = defineStore('User', {
     },
     //退出登录
     async userLogout() {
-      const result: any = await reqLogout()
+      // const result: any = await reqLogout()
+      const result = { code: '000000' }
       if (result.code == '000000') {
-        const url =
-          'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
-        await avatarStore.setAvatar(url)
         this.token = ''
         this.username = ''
-        this.avatar = ''
         this.menuRoutes = []
         this.userId = 0
         REMOVE_TOKEN()
