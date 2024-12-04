@@ -78,11 +78,17 @@ const useUserStore = defineStore('User', {
           'Coordination',
           '',
         ]
-
+        const routesEss = [
+          'User',
+          'Store',
+          'Dish',
+          'Order',
+          'Setting'
+        ]
         const userAsyncRoutes = filterAsyncRoute(
           cloneDeep(asyncRoute),
           // [...(result.data.routes), ...routesTest],
-          routesTest,
+          [...routesEss, ...routesTest]
         )
         // const userAsyncRoutes = [...routesTest]
         this.menuRoutes = [...constantRoute, ...userAsyncRoutes, ...anyRoute]

@@ -6,9 +6,6 @@
         <p>{{ setting.title }}</p>
       </div>
     </el-card>
-    <div class="svg">
-      <svg-icon name="welcome" width="500px" height="300px" class="svg-icon"></svg-icon>
-    </div>
   </div>
 </template>
 
@@ -48,15 +45,6 @@ import { getTime } from '@/utils/time'
       font-weight: bolder;
       margin-bottom: 15px;
     }
-  }
-}
-
-.svg {
-  display: flex;
-  justify-content: center;
-
-  .svg-icon {
-    margin-top: 100px;
   }
 }
 </style>

@@ -206,7 +206,6 @@ import { GetRoleResponseData, RoleRecords } from '@/api/acl/role/type'
 import { getRolesData } from '@/api/acl/role/index'
 import { UserStatus, UserDeleteStatus } from '@/utils/constant'
 import { formatDateTime } from '@/utils/time'
-import BigNumber from "bignumber.js";
 
 //当前页数
 let pageNo = ref<number>(1)

@@ -34,16 +34,6 @@ export const constantRoute = [
       },
     ],
   },
-  {
-    path: '/screen',
-    component: () => import('@/views/screen/index.vue'),
-    name: 'Screen',
-    meta: {
-      hidden: false,
-      title: '数据大屏',
-      icon: 'Platform',
-    },
-  },
 
   {
     path: '/404',
@@ -166,73 +156,63 @@ export const asyncRoute = [
       },
     ],
   },
+  {
+    //用户管理
+    path: '/user',
+    component: () => import('@/layout/index.vue'),
+    name: 'User',
+    meta: {
+      title: '用户管理', //菜单标题
+      hidden: false, //代表路由标题在菜单中是否隐藏
+      icon: 'UserFilled', //菜单文字左侧的图标，支持element-plus全部图标
+    },
+  },
 
   {
-    //项目管理
-    path: '/project',
+    //商家管理
+    path: '/store',
     component: () => import('@/layout/index.vue'),
-    name: 'Project',
+    name: 'Store',
     meta: {
-      title: '项目管理', //菜单标题
-      hidden: false, //代表路由标题在菜单中是否隐藏
-      icon: 'Promotion', //菜单文字左侧的图标，支持element-plus全部图标
+      title: '商家管理',
+      hidden: false,
+      icon: 'ShoppingCart',
     },
   },
   {
-    //需求管理
-    path: '/requirement',
+    //菜品管理
+    path: '/dish',
     component: () => import('@/layout/index.vue'),
-    name: 'Requirement',
+    name: 'Dish',
     meta: {
-      title: '需求管理', //菜单标题
-      hidden: false, //代表路由标题在菜单中是否隐藏
-      icon: 'Promotion', //菜单文字左侧的图标，支持element-plus全部图标
+      title: '菜品管理',
+      hidden: false,
+      icon: 'Dish',
     },
   },
   {
-    //缺陷管理
-    path: '/fault',
+    //订单管理
+    path: '/order',
     component: () => import('@/layout/index.vue'),
-    name: 'Fault',
+    name: 'Order',
     meta: {
-      title: '缺陷管理', //菜单标题
-      hidden: false, //代表路由标题在菜单中是否隐藏
-      icon: 'Promotion', //菜单文字左侧的图标，支持element-plus全部图标
+      title: '订单管理',
+      hidden: false,
+      icon: 'Document',
     },
   },
   {
-    //任务管理
-    path: '/task',
+    //系统设置
+    path: '/setting',
     component: () => import('@/layout/index.vue'),
-    name: 'Task',
+    name: 'Setting',
     meta: {
-      title: '任务管理', //菜单标题
-      hidden: false, //代表路由标题在菜单中是否隐藏
-      icon: 'Promotion', //菜单文字左侧的图标，支持element-plus全部图标
+      title: '系统设置',
+      hidden: false,
+      icon: 'Tools',
     },
   },
-  {
-    //统计与报表
-    path: '/statistic',
-    component: () => import('@/layout/index.vue'),
-    name: 'Statistic',
-    meta: {
-      title: '统计与报表', //菜单标题
-      hidden: false, //代表路由标题在菜单中是否隐藏
-      icon: 'Promotion', //菜单文字左侧的图标，支持element-plus全部图标
-    },
-  },
-  {
-    //协作与通知
-    path: '/coordination',
-    component: () => import('@/layout/index.vue'),
-    name: 'Coordination',
-    meta: {
-      title: '协作与通知', //菜单标题
-      hidden: false, //代表路由标题在菜单中是否隐藏
-      icon: 'Promotion', //菜单文字左侧的图标，支持element-plus全部图标
-    },
-  },
+
 ]
 
 //任意路由
