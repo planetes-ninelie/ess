@@ -15,7 +15,7 @@ export interface ResponseData {
 
 //登录接口返回数据类型
 export interface loginResponseData extends ResponseData {
-  data: record
+  data: string
 }
 
 //定义获取用户信息返回数据类型
@@ -39,15 +39,29 @@ export interface updateAvatar {
 
 //获取单个用户的数据
 export interface record {
-  id: string | number | undefined
   username: string
   password: string
   rawPassword: string
-  sex: number
+  userSex: number
   phone: string
   role: number
-  userImg: string | undefined
-  delTag: string | undefined
+  // id: number | string
+  // idStr?: string
+  // createTime?: string
+  // updateTime?: string
+  // roleName?: string
+  // role?: number
+  // roleDescription?: string
+  // rolePermissions?: string
+  // username?: string
+  // password?: string
+  // name?: string
+  // phone?: string
+  // email?: string
+  // image?: string
+  // deleteStatus?: number
+  // status?: number
+  // rawPassword?: string
 }
 
 //获取用户表单数据
@@ -66,7 +80,14 @@ export interface UserData extends ResponseData {
 // 分页查询用户提交的表单
 export interface usersListDto {
   username: string
+  email: string
+  phone: string
+  currentPage: number
+  pageSize: number
+}
+
+export interface usersListForm extends usersListDto {
   role: number
-  page?: number
-  pageSize?: number
+  status: number
+  deleteStatus: string
 }

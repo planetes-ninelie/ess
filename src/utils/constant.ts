@@ -1,14 +1,13 @@
-//用户账号状态
-export const UserStatus = {
-  '': '全部 info',
-  1: '正常 success',
-  2: '冻结 warning',
-  3: '注销 danger',
+// 角色
+export const UserRole = {
+  1: '超级管理员',
+  2: '管理员',
+  3: '商家',
+  4: '员工',
 }
 
-//用户删除状态
-export const UserDeleteStatus = {
-  '': '全部 info',
-  0: '未删除 success',
-  1: '已删除 danger',
+//性别
+export const Sex = {
+  0: '男',
+  1: '女',
 }

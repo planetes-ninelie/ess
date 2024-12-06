@@ -1,27 +1,53 @@
 //统一管理项目用户相关的接口
-
 import request from '@/utils/request'
-import type { loginFormData, loginResponseData, updateAvatar } from './type'
+import type {
+  loginFormData,
+  loginResponseData,
+  record,
+  usersListDto,
+} from './type'
 
 //项目用户相关的请求地址
 enum API {
   //用户登录url
-  LOGIN_URL = '/common/login',
-  //用户个人信息url
-  USERINFO_URL = '/common/info',
-  //用户退出url
-  LOGOUT_URL = '/common/logout',
-  //修改用户头像url
-  UPDATEAVATAR_URL = '/admin/acl/user/updateAvatar',
+  LOGIN_URL = '/user/login',
+  //获取用户表单数据url
+  USERSDATA_URL = '/user/listUser',
+  //新增用户数据url
+  ADDUSERDATA_URL = '/user/register',
+  //更新用户数据url
+  UPDATEUSERDATA_URL = '/user/update',
+  //用户分配角色url
+  // TOASSIGN_URL = '/users/edit/roles',
+  //根据id删除用户数据url
+  DELETEBYID_URL = '/user/out/',
+  //根据id列表删除用户数据url
+  // DELETEBYIDARR_URL = '',
 }
 
 //登录接口
 export const reqLogin = (data: loginFormData) =>
   request.post<any, loginResponseData>(API.LOGIN_URL, data)
-//获取用户信息
-export const reqUserInfo = () => request.get<any, any>(API.USERINFO_URL)
-//退出登录
-export const reqLogout = () => request.post<any, any>(API.LOGOUT_URL)
-//修改用户头像
-export const reqUpdateAvatar = (data: updateAvatar) =>
-  request.put<any, any>(API.UPDATEAVATAR_URL, data)
+
+//获取用户表单数据接口
+export const reqUsersData = (data: usersListDto) =>
+  request.post<any, any>(API.USERSDATA_URL, data)
+
+//新增用户数据接口与更新用户数据接口
+export const reqAddOrUpdateUserData = (data: record) => {
+  data.sex = +data.sex
+  if (data.id) return request.put<any, any>(API.UPDATEUSERDATA_URL, data)
+  else return request.post<any, any>(API.ADDUSERDATA_URL, data)
+}
+
+//用户分配角色接口
+// export const reqToAssign = (data: toAssignData) =>
+//   request.post<any, any>(API.TOASSIGN_URL, data)
+
+//根据id删除用户信息接口
+export const reqDeleteById = (id: number | string) =>
+  request.post<any, any>(API.DELETEBYID_URL, { id })
+
+//根据id列表删除用户信息接口
+// export const reqDeleteByIdArr = (idList: number[]) =>
+//   request.delete<any, any>(API.DELETEBYIDARR_URL, { data: idList })

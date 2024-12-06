@@ -10,14 +10,14 @@
           <el-input class="input" type="password" placeholder="请输入密码" :prefix-icon="Lock" v-model="loginForm.password"
             show-password></el-input>
         </el-form-item>
-        <el-form-item class="item-select">
+        <!-- <el-form-item class="item-select">
           <el-col :span="12" class="col-left">
             <el-checkbox v-model="checked">自动登录</el-checkbox>
           </el-col>
           <el-col :span="12" class="col-right">
             <span class="link">忘记密码</span>
           </el-col>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item class="item">
           <el-button :loading="loading" class="login_btn" size="default" @click="login">
             登录
@@ -32,21 +32,21 @@
     </transition>
 
     <transition name="el-zoom-in-center">
-      <el-form class="login_form" :model="loginForm" :rules="rules" ref="loginForms" v-show="!isLogin">
+      <el-form class="login_form" :model="registerForm" :rules="rules" ref="loginForms" v-show="!isLogin">
         <h2>注册账号</h2>
         <el-form-item class="item" prop="username">
-          <el-input class="input" :prefix-icon="User" placeholder="请输入账号" v-model="loginForm.username"></el-input>
+          <el-input class="input" :prefix-icon="User" placeholder="请输入账号" v-model="registerForm.username"></el-input>
         </el-form-item>
         <el-form-item class="item" prop="password">
-          <el-input class="input" type="password" placeholder="请输入密码" :prefix-icon="Lock" v-model="loginForm.password"
-            show-password></el-input>
+          <el-input class="input" type="password" placeholder="请输入密码" :prefix-icon="Lock"
+            v-model="registerForm.password" show-password></el-input>
         </el-form-item>
         <el-form-item class="item" prop="password">
-          <el-input class="input" type="password" placeholder="请再次输入密码" :prefix-icon="Lock" v-model="loginForm.password"
-            show-password></el-input>
+          <el-input class="input" type="password" placeholder="请再次输入密码" :prefix-icon="Lock"
+            v-model="registerForm.rawPassword" show-password></el-input>
         </el-form-item>
         <el-form-item class="item">
-          <el-button :loading="loading" class="login_btn" size="default" @click="login">
+          <el-button :loading="loading" class="login_btn" size="default" @click="registerSubmit">
             注册
           </el-button>
         </el-form-item>
@@ -66,9 +66,11 @@ import { User, Lock } from '@element-plus/icons-vue'
 import { reactive, ref } from 'vue'
 import useUserStore from '@/store/modules/user'
 import { useRouter, useRoute } from 'vue-router'
-import { ElNotification } from 'element-plus'
+import { ElMessage, ElNotification } from 'element-plus'
 //引入获取当前时间的函数
 import { getTime } from '@/utils/time'
+import { record } from '@/api/user/type'
+import { reqAddOrUpdateUserData } from '@/api/user/index'
 
 //引入用户相关的小仓库
 let userStore = useUserStore()
@@ -77,7 +79,7 @@ let $router = useRouter()
 //定义变量控制按钮加载效果
 let loading = ref(false)
 //收集账号与密码的数据
-let loginForm = reactive({ username: 'admin', password: '123456' })
+let loginForm = reactive({ username: '', password: '' })
 //获取el-form组件
 let loginForms = ref()
 //获取路由
@@ -86,13 +88,23 @@ let $route = useRoute()
 let checked = ref<boolean>(true)
 //是否为登录页面
 let isLogin = ref<boolean>(true)
+//收集注册表单
+let registerForm = reactive<record>({
+  id: '',
+  username: "",
+  password: "",
+  rawPassword: "",
+  sex: 0,
+  phone: "",
+  role: 3
+})
 
 //登录按钮回调
 const login = async () => {
   await loginForms.value.validate()
   loading.value = true
   try {
-    await userStore.userLogin(loginForm)
+    const res = await userStore.userLogin(loginForm)
     let redirect: any = $route.query.redirect
     $router.push({ path: redirect || '/' })
     ElNotification({
@@ -105,17 +117,17 @@ const login = async () => {
     loading.value = false
     ElNotification({
       type: 'error',
-      message: (error as Error).message,
+      message: (error as Error)
     })
   }
 }
 
 //自定义校验规则函数
 const validatorUserName = (_rule: any, value: any, callback: any) => {
-  if (value.length >= 5) {
+  if (value.length >= 2) {
     callback()
   } else {
-    callback(new Error('账号长度至少五位'))
+    callback(new Error('账号长度至少两位'))
   }
 }
 
@@ -130,7 +142,7 @@ const validatorPassword = (_rule: any, value: any, callback: any) => {
 //定义表单校验需要配置对象
 const rules = {
   username: [{ trigger: 'change', validator: validatorUserName }],
-  password: [{ trigger: 'change', validator: validatorPassword }],
+  password: [{ trigger: 'change', validator: validatorPassword }]
 }
 
 //标题
@@ -138,6 +150,26 @@ const title = import.meta.env.VITE_APP_TITLE
 
 //切换场景
 const register = () => isLogin.value = !isLogin.value
+
+//注册
+const registerSubmit = async () => {
+  delete registerForm.id
+  const res = await reqAddOrUpdateUserData(registerForm)
+  if (res.code == 0) {
+    ElMessage({
+      type: 'success',
+      message: `注册用户昵称${registerForm.username}成功!`,
+    })
+    register()
+  } else {
+    ElMessage({
+      type: 'error',
+      message:
+        res.msg ||
+        `注册用户名${registerForm.username}失败!`,
+    })
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -149,7 +181,6 @@ const register = () => isLogin.value = !isLogin.value
   background-size: cover;
   display: flex;
   justify-content: center;
-  // align-items: center;
 }
 
 .login_form {
@@ -157,7 +188,6 @@ const register = () => isLogin.value = !isLogin.value
   top: 20vh;
   width: 450px;
   height: 350px;
-  // background-color: rgba($color: #f8f8f8, $alpha: 0.8);
   background-color: rgba($color: #000000, $alpha: 0);
   background-size: cover;
   padding: 40px;
@@ -166,10 +196,16 @@ const register = () => isLogin.value = !isLogin.value
 
   h1 {
     margin: 20px 0;
-    color: black;
+    color: #00aaff;
     font-size: 40px;
     font-weight: 600;
+  }
 
+  h2 {
+    margin: 20px 0;
+    color: #00aaff;
+    font-size: 25px;
+    font-weight: 600;
   }
 
   .item {
@@ -203,7 +239,7 @@ const register = () => isLogin.value = !isLogin.value
 
   .login_btn {
     width: 100%;
-    background-color: #13c2c2;
+    background-color: #00aaff;
     color: white;
     font-size: 20px;
     letter-spacing: 5px;
@@ -217,7 +253,7 @@ const register = () => isLogin.value = !isLogin.value
 
 .link {
   font-size: 18px;
-  color: #13c2c2;
+  color: #00aaff;
 
   &:hover {
     cursor: pointer;
@@ -227,11 +263,11 @@ const register = () => isLogin.value = !isLogin.value
 .el-checkbox {
   color: #13c2c2;
   --el-checkbox-font-size: 18px;
-  --el-color-primary: #119a9a;
+  --el-color-primary: #00aaff;
 }
 
 .el-input {
-  --el-color-primary: #119a9a;
+  --el-color-primary: #00aaff;
 }
 
 .transition-box {

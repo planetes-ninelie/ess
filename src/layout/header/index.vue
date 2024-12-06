@@ -6,7 +6,7 @@
     <h2>{{ setting.title }}</h2>
 
     <el-dropdown>
-      <span class="el-dropdown-link" style="background-color: white;color: #6b717f;height:25px;line-height:25px;">
+      <span class="el-dropdown-link right">
         欢迎：超级管理员
         <el-icon class="el-icon--right">
           <arrow-down />
@@ -51,5 +51,14 @@ const logout = async () => {
   color: white;
   font-size: 1.5em;
   font-weight: bold;
+}
+
+.right {
+  background-color: white;
+  color: #6b717f;
+  height: 25px;
+  line-height: 25px;
+  padding: 0 15px;
+  border-radius: 12.5px;
 }
 </style>

@@ -1,8 +1,6 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import { ElLoading } from 'element-plus'
-//引入用户相关的仓库
-import useUserStore from '@/store/modules/user'
 //创建axios实例
 const request = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
@@ -13,10 +11,10 @@ let loadingInstance
 request.interceptors.request.use((config) => {
   loadingInstance = ElLoading.service({ fullscreen: true })
   //获取用户相关的小仓库
-  const userStore = useUserStore()
-  if (userStore.token) {
-    config.headers.token = userStore.token
-  }
+  // const userStore = useUserStore()
+  // if (userStore.phone) {
+  //   config.headers.phone = userStore.phone
+  // }
   //返回配置对象
   return config
 })
@@ -33,7 +31,7 @@ request.interceptors.response.use(
     const status = error.response.status
     switch (status) {
       case 401:
-        msg = 'token过期'
+        msg = 'info过期'
         break
       case 403:
         msg = '无权访问'

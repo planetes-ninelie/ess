@@ -1,8 +1,18 @@
+//统一管理项目用户相关的接口
+
 import request from '@/utils/request'
-import type { record, toAssignData, usersListDto } from './type'
+import type {
+  loginFormData,
+  loginResponseData,
+  record,
+  toAssignData,
+  usersListDto,
+} from './type'
 
 //项目用户相关的请求地址
 enum API {
+  //用户登录url
+  LOGIN_URL = '',
   //获取用户表单数据url
   USERSDATA_URL = '/users/list',
   //新增用户数据url
@@ -13,9 +23,11 @@ enum API {
   TOASSIGN_URL = '/users/edit/roles',
   //根据id删除用户数据url
   DELETEBYID_URL = '/common/delete/',
-  //根据id列表删除用户数据url
-  DELETEBYIDARR_URL = '',
 }
+
+//登录接口
+export const reqLogin = (data: loginFormData) =>
+  request.post<any, loginResponseData>(API.LOGIN_URL, data)
 
 //获取用户表单数据接口
 export const reqUsersData = (dto: usersListDto) =>
@@ -23,7 +35,7 @@ export const reqUsersData = (dto: usersListDto) =>
 
 //新增用户数据接口与更新用户数据接口
 export const reqAddOrUpdateUserData = (data: record) => {
-  if (data.idStr !== null || data.idStr !== '')
+  if (data.phone !== null || data.phone !== '')
     return request.put<any, any>(API.UPDATEUSERDATA_URL, data)
   else return request.post<any, any>(API.ADDUSERDATA_URL, data)
 }
@@ -35,7 +47,3 @@ export const reqToAssign = (data: toAssignData) =>
 //根据id删除用户信息接口
 export const reqDeleteById = (id: number | string) =>
   request.delete<any, any>(API.DELETEBYID_URL + id)
-
-//根据id列表删除用户信息接口
-export const reqDeleteByIdArr = (idList: number[]) =>
-  request.delete<any, any>(API.DELETEBYIDARR_URL, { data: idList })
