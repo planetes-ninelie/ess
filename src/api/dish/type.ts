@@ -40,9 +40,10 @@ export interface updateAvatar {
 //获取单个菜品的数据
 export interface record {
   id: string | number | undefined
-  userId: string | number
+  shopId: string | number
   name: string
-  description: string
+  price: number
+  dishImg: string
   status: number
   createdAt?: string
   updatedAt?: string
@@ -57,9 +58,9 @@ export interface UserData extends ResponseData {
 }
 
 // 分页查询菜品提交的表单
-export interface StoreListDto {
-  name: string
-  address: number
+export interface DishListDto {
+  dishId: number
+  shopId: number
   page?: number
   pageSize?: number
 }

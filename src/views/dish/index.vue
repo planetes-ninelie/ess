@@ -2,12 +2,12 @@
   <div>
     <header>
       <el-form :model="userSearchDto" label-width="80px" :inline="true">
-        <el-form-item label="菜品名称">
-          <el-input type="text" placeholder="请输入菜品名称" v-model="userSearchDto.username"></el-input>
+        <el-form-item label="商家id">
+          <el-select v-model="userSearchDto.shopId" placeholder="请选择商家id" style="width: 100px">
+            <el-option v-for="item in stores" :key="item" :label="item" :value="item"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="菜品地址">
-          <el-input type="text" placeholder="请输入菜品地址" v-model="userSearchDto.address"></el-input>
-        </el-form-item>
+
         <el-form-item>
           <el-button type="primary" icon="Plus" style="margin-right: 15px" @click="editUser(false, null)"
             v-has="`btn.User.add`">
@@ -25,25 +25,27 @@
 
     <!-- 新增菜品或修改菜品抽屉 -->
     <EditStore :drawerUser="drawerUser" @update:drawerUser="(newVal) => {
-        drawerUser = newVal
-        getHasUser()
-      }
-      " :isUpdate="isUpdate" :rowData="rowData"></EditStore>
+      drawerUser = newVal
+      getHasUser()
+    }
+      " :isUpdate="isUpdate" :rowData="rowData" :stores="stores"></EditStore>
 
     <!-- 表格数据 -->
     <el-table border :data="usersData" style="margin-bottom: 10px">
       <el-table-column property="id" align="center" label="id" width="100" show-overflow-tooltip />
       <el-table-column property="name" label="菜品名" align="center" width="150" show-overflow-tooltip />
-      <el-table-column property="description" label="描述" align="center" width="150" show-overflow-tooltip />
-      <el-table-column property="status" label="状态" align="center" width="150" show-overflow-tooltip />
-      <el-table-column property="userIdStr" label="所属用户" align="center" width="150" show-overflow-tooltip />
-      <el-table-column property="address" label="地址" align="center" width="150" show-overflow-tooltip />
+      <el-table-column property="price" label="价格" align="center" width="150" show-overflow-tooltip />
+      <el-table-column property="shopId" label="所属商家id" align="center" width="150" show-overflow-tooltip />
       <el-table-column label="操作" align="center" width="300" fixed="right">
         <template #="{ row }">
-          <el-button type="primary" size="small" icon="Edit" @click="editUser(true, row)" v-has="`btn.User.update`">
+          <el-button type="primary" size="small" :icon="!row.status ? 'Upload' : 'Download'"
+            @click="editUser(true, row)">
+            {{ row.state ? '已上架' : '已下架' }}
+          </el-button>
+          <el-button type="primary" size="small" icon="Edit" @click="editUser(true, row)">
             编辑
           </el-button>
-          <el-popconfirm :title="`确定删除${row.username}吗？`" @confirm="deleteUser(row)" width="250">
+          <el-popconfirm :title="`确定删除${row.name}吗？`" @confirm="deleteUser(row)" width="250">
             <template #reference>
               <el-button type="warning" size="small" icon="Delete" v-has="`btn.User.remove`">
                 删除
@@ -66,11 +68,12 @@ import { nextTick, onMounted, reactive, ref, toRaw, watch } from 'vue'
 import {
   reqAddOrUpdateUserData,
   reqToAssign,
-  reqUsersData,
+  reqDishData,
   reqDeleteById,
   reqDeleteByIdArr,
-} from '@/api/store/index'
-import { UsersData, record, usersListDto } from '@/api/store/type'
+} from '@/api/dish/index'
+import { reqUsersData } from '@/api/store/index'
+import { UsersData, record, usersListDto } from '@/api/dish/type'
 import { ElMessage, ElTable, ElMessageBox } from 'element-plus'
 import { Sex, UserRole } from '@/utils/constant'
 import type { UsersRow } from './EditStore/index.vue'
@@ -86,19 +89,18 @@ let total = ref<number>(0)
 let usersData = ref<record[]>([])
 //搜索菜品
 let userSearchDto = ref<usersListDto>({
-  name: '',
-  address: '',
+  shopId: 1,
 })
-// 角色列表
-// let roleOptions = ref<string[]>([])
 //控制新增菜品或更新菜品的抽屉显示与隐藏
 let drawerUser = ref<boolean>(false)
 //控制抽屉表单是新增菜品或更新菜品
 let isUpdate = ref<boolean>(false)
 //行数据
 let rowData = ref<UsersRow>({})
+let stores = ref()
 //组件挂载初始化
 onMounted(() => {
+  getStore()
   getHasUser()
   //getRoles()
 })
@@ -106,17 +108,29 @@ onMounted(() => {
 //获取菜品数据
 const getHasUser = async () => {
   const data = {
-    name: userSearchDto.value.name,
-    address: userSearchDto.value.address,
+    shopId: userSearchDto.value.shopId,
     page: pageNo.value,
     pageSize: pageSize.value,
   }
-  // let result: UsersData = await reqUsersData(data)
-  // if (result.code == 0) {
-  //   total.value = result.data.total
-  //   usersData.value = getUsersData(result.data.list)
-  //   usersData.value = result.data.list
-  // }
+  let result: UsersData = await reqDishData(data)
+  if (result.code == 0) {
+    total.value = result.data.total
+    usersData.value = result.data.list
+    console.log(usersData.value);
+  }
+}
+
+const getStore = async () => {
+  const data = {
+    name: '',
+    address: '',
+    page: 1,
+    pageSize: 999,
+  }
+  let result: any = await reqUsersData(data)
+  if (result.code == 0) {
+    stores.value = result.data.list.map((item) => item.id)
+  }
 }
 
 //改变当前页数
@@ -138,10 +152,7 @@ const editUser = (val, row) => {
 //重置列表
 const reset = () => {
   Object.assign(userSearchDto.value, {
-    username: '',
-    role: '',
-    currentPage: pageNo.value,
-    pageSize: pageSize.value,
+    shopId: ''
   })
 }
 
@@ -151,13 +162,13 @@ const deleteUser = async (row: any) => {
   if (result.code == 0) {
     ElMessage({
       type: 'success',
-      message: `删除菜品${row.username}成功!`,
+      message: `删除菜品${row.name}成功!`,
     })
     getHasUser()
   } else {
     ElMessage({
       type: 'error',
-      message: `删除菜品${row.username}失败!`,
+      message: `删除菜品${row.name}失败!`,
     })
   }
 }

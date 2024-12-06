@@ -1,22 +1,46 @@
 <template>
-  <el-dialog v-model="props.drawerUser" :title="props.isUpdate ? '修改订单' : '添加订单'" width="500"
-    :before-close="cancelUserDrawer" destroy-on-close>
+  <el-dialog
+    v-model="props.drawerUser"
+    :title="props.isUpdate ? '修改订单' : '添加订单'"
+    width="500"
+    :before-close="cancelUserDrawer"
+    destroy-on-close
+  >
     <template #default>
       <el-form :model="addUserForm" label-width="auto">
         <el-form-item label="订单名" prop="name">
-          <el-input placeholder="请填写订单名" v-model="addUserForm.name"></el-input>
+          <el-input
+            placeholder="请填写订单名"
+            v-model="addUserForm.name"
+          ></el-input>
         </el-form-item>
         <el-form-item label="订单简介" prop="description">
-          <el-input type="text" placeholder="请输入订单简介" v-model="addUserForm.description"></el-input>
+          <el-input
+            type="text"
+            placeholder="请输入订单简介"
+            v-model="addUserForm.description"
+          ></el-input>
         </el-form-item>
         <el-form-item label="订单状态" prop="status">
-          <el-select v-model="addUserForm.status" placeholder="请输入订单状态" style="width: 240px">
-            <el-option v-for="item in statusOptions" :key="item.value" :label="item.label"
-              :value="item.label"></el-option>
+          <el-select
+            v-model="addUserForm.status"
+            placeholder="请输入订单状态"
+            style="width: 240px"
+          >
+            <el-option
+              v-for="item in statusOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.label"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="订单地址" prop="address">
-          <el-input type="text" placeholder="请输入订单地址" v-model="addUserForm.address"></el-input>
+          <el-input
+            type="text"
+            placeholder="请输入订单地址"
+            v-model="addUserForm.address"
+          ></el-input>
         </el-form-item>
       </el-form>
     </template>

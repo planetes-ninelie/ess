@@ -7,7 +7,7 @@
 
     <el-dropdown>
       <span class="el-dropdown-link right">
-        欢迎：超级管理员
+        欢迎：{{ role }}
         <el-icon class="el-icon--right">
           <arrow-down />
         </el-icon>
@@ -31,7 +31,7 @@
 import setting from '@/setting'
 import { useRouter, useRoute } from 'vue-router'
 import useUserStore from '@/store/modules/user'
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue'
 import { GET_USER } from '@/utils/token'
 import { UserRole } from '@/utils/constant'
 let userStore = useUserStore()
@@ -42,10 +42,19 @@ let $route = useRoute()
 let drawerUser = ref<boolean>(false)
 let rowData = ref()
 let roleOptions = ref<[]>([])
-watch(() => drawerUser.value, () => {
-  rowData.value = GET_USER()
-  getRoles()
-})
+let role = ref<string>('')
+watch(
+  () => drawerUser.value,
+  () => {
+    rowData.value = GET_USER()
+    getRoles()
+  },
+)
+onMounted(() => init())
+const init = () => {
+  const roleId = GET_USER().role
+  role.value = UserRole[roleId]
+}
 const logout = async () => {
   await userStore.userLogout()
   $router.push({
@@ -53,7 +62,7 @@ const logout = async () => {
     query: { redirect: $route.path },
   })
 }
-const open = () => drawerUser.value = true
+const open = () => (drawerUser.value = true)
 //获取角色列表
 const getRoles = () => {
   roleOptions.value.push({

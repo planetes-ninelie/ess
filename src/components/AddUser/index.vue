@@ -1,29 +1,71 @@
 <template>
-  <el-dialog v-model="props.drawerUser" :title="props.isUpdate ? '修改用户' : '添加用户'" width="500"
-    :before-close="cancelUserDrawer" destroy-on-close>
+  <el-dialog
+    v-model="props.drawerUser"
+    :title="props.isUpdate ? '修改用户' : '添加用户'"
+    width="500"
+    :before-close="cancelUserDrawer"
+    destroy-on-close
+  >
     <template #default>
-      <el-form :model="addUserForm" :rules="rules" ref="formRef" label-width="auto">
+      <el-form
+        :model="addUserForm"
+        :rules="rules"
+        ref="formRef"
+        label-width="auto"
+      >
         <el-form-item label="用户名" prop="username">
-          <el-input placeholder="请填写用户名" v-model="addUserForm.username"></el-input>
+          <el-input
+            placeholder="请填写用户名"
+            v-model="addUserForm.username"
+          ></el-input>
         </el-form-item>
         <el-form-item label="用户密码" prop="password" v-if="!isUpdate">
-          <el-input placeholder="请填写用户密码" v-model="addUserForm.password" type="password"></el-input>
+          <el-input
+            placeholder="请填写用户密码"
+            v-model="addUserForm.password"
+            type="password"
+          ></el-input>
         </el-form-item>
         <el-form-item label="再次输入密码" prop="rawPassword" v-if="!isUpdate">
-          <el-input placeholder="请再次填写用户密码" v-model="addUserForm.rawPassword" type="password"></el-input>
+          <el-input
+            placeholder="请再次填写用户密码"
+            v-model="addUserForm.rawPassword"
+            type="password"
+          ></el-input>
         </el-form-item>
         <el-form-item label="性别">
-          <el-select v-model="addUserForm.sexStr" placeholder="请选择用户性别" style="width: 240px">
-            <el-option v-for="item in sexOptions" :key="item.value" :label="item.label" :value="item.label"></el-option>
+          <el-select
+            v-model="addUserForm.sexStr"
+            placeholder="请选择用户性别"
+            style="width: 240px"
+          >
+            <el-option
+              v-for="item in sexOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.label"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="用户电话" prop="phone">
-          <el-input type="text" placeholder="请输入用户电话" v-model="addUserForm.phone"></el-input>
+          <el-input
+            type="text"
+            placeholder="请输入用户电话"
+            v-model="addUserForm.phone"
+          ></el-input>
         </el-form-item>
         <el-form-item label="所属角色">
-          <el-select v-model="addUserForm.roleStr" placeholder="请选择用户所属角色" style="width: 240px">
-            <el-option v-for="item in props.roleOptions" :key="item.value" :label="item.label"
-              :value="item.label"></el-option>
+          <el-select
+            v-model="addUserForm.roleStr"
+            placeholder="请选择用户所属角色"
+            style="width: 240px"
+          >
+            <el-option
+              v-for="item in props.roleOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.label"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -159,7 +201,7 @@ const confirmUserAdd = async () => {
     if (addUserForm.id == sessionStorage.getItem('INFO')) {
       await userStore.userLogout()
       $router.push({
-        path: '/login'
+        path: '/login',
       })
     }
   } else {

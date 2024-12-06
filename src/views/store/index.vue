@@ -3,20 +3,43 @@
     <header>
       <el-form :model="userSearchDto" label-width="80px" :inline="true">
         <el-form-item label="商家名称">
-          <el-input type="text" placeholder="请输入商家名称" v-model="userSearchDto.name"></el-input>
+          <el-input
+            type="text"
+            placeholder="请输入商家名称"
+            v-model="userSearchDto.name"
+          ></el-input>
         </el-form-item>
         <el-form-item label="商家地址">
-          <el-input type="text" placeholder="请输入商家地址" v-model="userSearchDto.address"></el-input>
+          <el-input
+            type="text"
+            placeholder="请输入商家地址"
+            v-model="userSearchDto.address"
+          ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="Plus" style="margin-right: 15px" @click="editUser(false, null)"
-            v-has="`btn.User.add`">
+          <el-button
+            type="primary"
+            icon="Plus"
+            style="margin-right: 15px"
+            @click="editUser(false, null)"
+            v-has="`btn.User.add`"
+          >
             添加
           </el-button>
-          <el-button type="success" icon="Search" style="margin-right: 15px" @click="search">
+          <el-button
+            type="success"
+            icon="Search"
+            style="margin-right: 15px"
+            @click="search"
+          >
             搜索
           </el-button>
-          <el-button type="default" icon="Refresh" style="margin-right: 15px" @click="reset">
+          <el-button
+            type="default"
+            icon="Refresh"
+            style="margin-right: 15px"
+            @click="reset"
+          >
             重置
           </el-button>
         </el-form-item>
@@ -24,28 +47,85 @@
     </header>
 
     <!-- 新增商家或修改商家抽屉 -->
-    <EditStore :drawerUser="drawerUser" @update:drawerUser="(newVal) => {
-      drawerUser = newVal
-      getHasUser()
-    }
-      " :isUpdate="isUpdate" :rowData="rowData"></EditStore>
+    <EditStore
+      :drawerUser="drawerUser"
+      @update:drawerUser="
+        (newVal) => {
+          drawerUser = newVal
+          getHasUser()
+        }
+      "
+      :isUpdate="isUpdate"
+      :rowData="rowData"
+    ></EditStore>
 
     <!-- 表格数据 -->
     <el-table border :data="usersData" style="margin-bottom: 10px">
-      <el-table-column property="id" align="center" label="id" width="100" show-overflow-tooltip />
-      <el-table-column property="name" label="商家名" align="center" width="150" show-overflow-tooltip />
-      <el-table-column property="description" label="描述" align="center" width="150" show-overflow-tooltip />
-      <el-table-column property="statusStr" label="状态" align="center" width="150" show-overflow-tooltip />
-      <el-table-column property="userId" label="所属用户id" align="center" width="150" show-overflow-tooltip />
-      <el-table-column property="address" label="地址" align="center" width="150" show-overflow-tooltip />
+      <el-table-column
+        property="id"
+        align="center"
+        label="id"
+        width="100"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        property="name"
+        label="商家名"
+        align="center"
+        width="150"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        property="description"
+        label="描述"
+        align="center"
+        width="150"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        property="statusStr"
+        label="状态"
+        align="center"
+        width="150"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        property="userId"
+        label="所属用户id"
+        align="center"
+        width="150"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        property="address"
+        label="地址"
+        align="center"
+        width="150"
+        show-overflow-tooltip
+      />
       <el-table-column label="操作" align="center" width="300" fixed="right">
         <template #="{ row }">
-          <el-button type="primary" size="small" icon="Edit" @click="editUser(true, row)" v-has="`btn.User.update`">
+          <el-button
+            type="primary"
+            size="small"
+            icon="Edit"
+            @click="editUser(true, row)"
+            v-has="`btn.User.update`"
+          >
             编辑
           </el-button>
-          <el-popconfirm :title="`确定删除${row.username}吗？`" @confirm="deleteUser(row)" width="250">
+          <el-popconfirm
+            :title="`确定删除${row.username}吗？`"
+            @confirm="deleteUser(row)"
+            width="250"
+          >
             <template #reference>
-              <el-button type="warning" size="small" icon="Delete" v-has="`btn.User.remove`">
+              <el-button
+                type="warning"
+                size="small"
+                icon="Delete"
+                v-has="`btn.User.remove`"
+              >
                 删除
               </el-button>
             </template>
@@ -55,9 +135,17 @@
     </el-table>
 
     <!-- 分页 -->
-    <el-pagination @size-change="changeSize" @current-change="getHasUser()" :pager-count="9"
-      v-model:current-page="pageNo" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20]" :background="true"
-      layout="prev, pager, next, jumper, ->, sizes, total" :total="total" />
+    <el-pagination
+      @size-change="changeSize"
+      @current-change="getHasUser()"
+      :pager-count="9"
+      v-model:current-page="pageNo"
+      v-model:page-size="pageSize"
+      :page-sizes="[5, 10, 15, 20]"
+      :background="true"
+      layout="prev, pager, next, jumper, ->, sizes, total"
+      :total="total"
+    />
   </div>
 </template>
 
@@ -114,7 +202,7 @@ const getHasUser = async () => {
   let result: UsersData = await reqUsersData(data)
   if (result.code == 0) {
     total.value = result.data.total
-    result.data.list.forEach(item => {
+    result.data.list.forEach((item) => {
       item.statusStr = StoreStatus[item.status]
     })
     usersData.value = result.data.list

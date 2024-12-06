@@ -6,17 +6,18 @@
         <el-form-item label="菜品名" prop="name">
           <el-input placeholder="请填写菜品名" v-model="addUserForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="菜品简介" prop="description">
-          <el-input type="text" placeholder="请输入菜品简介" v-model="addUserForm.description"></el-input>
+        <el-form-item label="菜品价格" prop="price">
+          <el-input type="number" placeholder="请输入菜品价格" v-model="addUserForm.price"></el-input>
         </el-form-item>
-        <el-form-item label="菜品状态" prop="status">
-          <el-select v-model="addUserForm.status" placeholder="请输入菜品状态" style="width: 240px">
-            <el-option v-for="item in statusOptions" :key="item.value" :label="item.label"
-              :value="item.label"></el-option>
+        <el-form-item label="菜品商家" prop="status">
+          <el-select v-model="addUserForm.shopId" placeholder="请输入菜品所属商家" style="width: 180px">
+            <el-option v-for="item in props.stores" :key="item" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="菜品地址" prop="address">
-          <el-input type="text" placeholder="请输入菜品地址" v-model="addUserForm.address"></el-input>
+        <el-form-item label="菜品状态" prop="status">
+          <el-select v-model="addUserForm.status" placeholder="请选择菜品状态" style="width: 180px">
+            <el-option v-for="item in status" :key="item" :label="item" :value="item"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
     </template>
@@ -49,12 +50,14 @@ const props = defineProps({
     type: Object,
     require: false,
   },
+  stores: {
+    type: Array,
+    require: false
+  }
 })
 const emits = defineEmits<{ (e: string, value: boolean): void }>()
-let statusOptions = ref<[]>([])
-onMounted(() => {
-  getStoreStatus()
-})
+let status = ref<[]>(['下架', '上架'])
+
 watch(
   () => props.drawerUser,
   () => {
@@ -65,44 +68,34 @@ let formRef = ref<any>()
 //新增菜品表单数据
 let addUserForm = reactive<record>({
   id: '',
-  userId: '',
   name: '',
-  description: '',
-  status: '',
-  address: '',
+  shopId: '',
+  price: '',
+  dishImg: '',
+  status: ''
 })
 
 //初始化表单
 const editInit = () => {
   if (props.isUpdate) {
-    const status = Sex[props.rowData.status]
     Object.assign(addUserForm, {
       id: props.rowData.id,
-      userId: props.rowData.userId,
       name: props.rowData.name,
-      description: props.rowData.description,
       status: props.rowData.status,
-      address: props.rowData.address,
+      shopId: props.rowData.shopId,
+      price: props.rowData.price,
+      dishImg: '',
     })
   } else {
     Object.assign(addUserForm, {
       id: '',
-      userId: '',
       name: '',
-      description: '',
-      status: '',
-      address: '',
+      shopId: '',
+      price: '',
+      dishImg: '',
+      status: ''
     })
   }
-}
-//获取状态列表
-const getStoreStatus = () => {
-  Object.entries(StoreStatus).forEach((item) => {
-    statusOptions.value.push({
-      label: item[1],
-      value: item[0],
-    })
-  })
 }
 
 //提交新增或修改的菜品信息
@@ -111,16 +104,12 @@ const confirmUserAdd = async () => {
     addUserForm.id = ''
     addUserForm.userId = GET_INFO()
   }
-  addUserForm.status = Object.keys(StoreStatus).find(
-    (key) => StoreStatus[key] === addUserForm.status,
-  )
-  delete addUserForm.storeStr
 
   let result: any = await reqAddOrUpdateUserData(addUserForm)
-  if (result.code == '000000') {
+  if (result.code == 0) {
     ElMessage({
       type: 'success',
-      message: `${addUserForm.id ? '修改' : '添加'}菜品昵称${addUserForm.username}成功!`,
+      message: `${addUserForm.id ? '修改' : '添加'}菜品${addUserForm.name}成功!`,
     })
     emits('update:drawerUser', false)
   } else {
@@ -128,7 +117,7 @@ const confirmUserAdd = async () => {
       type: 'error',
       message:
         result.message ||
-        `${addUserForm.id ? '修改' : '添加'}菜品昵称${addUserForm.username}失败!`,
+        `${addUserForm.id ? '修改' : '添加'}菜品${addUserForm.name}失败!`,
     })
   }
 }
