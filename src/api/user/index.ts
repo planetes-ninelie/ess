@@ -17,12 +17,8 @@ enum API {
   ADDUSERDATA_URL = '/user/register',
   //更新用户数据url
   UPDATEUSERDATA_URL = '/user/update',
-  //用户分配角色url
-  // TOASSIGN_URL = '/users/edit/roles',
   //根据id删除用户数据url
   DELETEBYID_URL = '/user/out/',
-  //根据id列表删除用户数据url
-  // DELETEBYIDARR_URL = '',
 }
 
 //登录接口
@@ -40,14 +36,6 @@ export const reqAddOrUpdateUserData = (data: record) => {
   else return request.post<any, any>(API.ADDUSERDATA_URL, data)
 }
 
-//用户分配角色接口
-// export const reqToAssign = (data: toAssignData) =>
-//   request.post<any, any>(API.TOASSIGN_URL, data)
-
 //根据id删除用户信息接口
 export const reqDeleteById = (id: number | string) =>
   request.post<any, any>(API.DELETEBYID_URL, { id })
-
-//根据id列表删除用户信息接口
-// export const reqDeleteByIdArr = (idList: number[]) =>
-//   request.delete<any, any>(API.DELETEBYIDARR_URL, { data: idList })

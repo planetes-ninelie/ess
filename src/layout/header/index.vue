@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import setting from '@/setting';
+import setting from '@/setting'
 import { useRouter, useRoute } from 'vue-router'
 import useUserStore from '@/store/modules/user'
 let userStore = useUserStore()

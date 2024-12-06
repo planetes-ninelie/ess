@@ -2,7 +2,11 @@
   <template v-for="item in menuList" :key="item.path" class="container">
     <!-- 没有子路由 -->
     <template v-if="!item.children">
-      <el-menu-item :index="item.path" v-if="!item.meta.hidden" @click="goRoute">
+      <el-menu-item
+        :index="item.path"
+        v-if="!item.meta.hidden"
+        @click="goRoute"
+      >
         <el-icon>
           <component :is="item.meta.icon"></component>
         </el-icon>
@@ -13,7 +17,11 @@
     </template>
     <!-- 有子路由但只有一个 -->
     <template v-if="item.children && item.children.length == 1">
-      <el-menu-item :index="item.children[0].path" v-if="!item.children[0].meta.hidden" @click="goRoute">
+      <el-menu-item
+        :index="item.children[0].path"
+        v-if="!item.children[0].meta.hidden"
+        @click="goRoute"
+      >
         <el-icon>
           <component :is="item.children[0].meta.icon"></component>
         </el-icon>
@@ -24,7 +32,11 @@
     </template>
     <!-- 有子路由且个数大于一个 -->
     <template v-if="item.children && item.children.length > 1">
-      <el-sub-menu :index="item.path" v-if="!item.meta.hidden" style="--el-menu-base-level-padding: 10px;">
+      <el-sub-menu
+        :index="item.path"
+        v-if="!item.meta.hidden"
+        style="--el-menu-base-level-padding: 10px"
+      >
         <template #title>
           <el-icon>
             <component :is="item.meta.icon"></component>

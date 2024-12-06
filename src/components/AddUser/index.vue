@@ -1,30 +1,71 @@
 <template>
-  <el-dialog v-model="props.drawerUser" :title="props.isUpdate ? '修改用户' : '添加用户'" width="500"
-    :before-close="cancelUserDrawer" destroy-on-close>
+  <el-dialog
+    v-model="props.drawerUser"
+    :title="props.isUpdate ? '修改用户' : '添加用户'"
+    width="500"
+    :before-close="cancelUserDrawer"
+    destroy-on-close
+  >
     <template #default>
-      <el-form :model="addUserForm" :rules="rules" ref="formRef" label-width="auto">
+      <el-form
+        :model="addUserForm"
+        :rules="rules"
+        ref="formRef"
+        label-width="auto"
+      >
         <el-form-item label="用户名" prop="username">
-          <el-input placeholder="请填写用户名" v-model="addUserForm.username"></el-input>
+          <el-input
+            placeholder="请填写用户名"
+            v-model="addUserForm.username"
+          ></el-input>
         </el-form-item>
         <el-form-item label="用户密码" prop="password" v-if="!isUpdate">
-          <el-input placeholder="请填写用户密码" v-model="addUserForm.password" type="password"></el-input>
+          <el-input
+            placeholder="请填写用户密码"
+            v-model="addUserForm.password"
+            type="password"
+          ></el-input>
         </el-form-item>
         <el-form-item label="再次输入密码" prop="rawPassword" v-if="!isUpdate">
-          <el-input placeholder="请再次填写用户密码" v-model="addUserForm.rawPassword" type="password"></el-input>
+          <el-input
+            placeholder="请再次填写用户密码"
+            v-model="addUserForm.rawPassword"
+            type="password"
+          ></el-input>
         </el-form-item>
         <el-form-item label="性别">
-          <el-select v-model="addUserForm.sexStr" placeholder="请选择用户性别" style="width: 240px">
-            <el-option v-for="item in sexOptions" :key="item.value" :label="item.label" :value="item.label">
-            </el-option>
+          <el-select
+            v-model="addUserForm.sexStr"
+            placeholder="请选择用户性别"
+            style="width: 240px"
+          >
+            <el-option
+              v-for="item in sexOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.label"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="用户电话" prop="phone">
-          <el-input type="text" placeholder="请输入用户电话" v-model="addUserForm.phone"></el-input>
+          <el-input
+            type="text"
+            placeholder="请输入用户电话"
+            v-model="addUserForm.phone"
+          ></el-input>
         </el-form-item>
         <el-form-item label="所属角色">
-          <el-select v-model="addUserForm.roleStr" placeholder="请选择用户所属角色" style="width: 240px">
-            <el-option v-for="item in props.roleOptions" :key="item.value" :label="item.label" :value="item.label">
-            </el-option>
+          <el-select
+            v-model="addUserForm.roleStr"
+            placeholder="请选择用户所属角色"
+            style="width: 240px"
+          >
+            <el-option
+              v-for="item in props.roleOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.label"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -47,20 +88,20 @@ import { Sex, UserRole } from '@/utils/constant'
 const props = defineProps({
   drawerUser: {
     type: Boolean,
-    require: true
+    require: true,
   },
   isUpdate: {
     type: Boolean,
-    require: true
+    require: true,
   },
   rowData: {
     type: Object,
-    require: false
+    require: false,
   },
   roleOptions: {
     type: Array,
-    require: false
-  }
+    require: false,
+  },
 })
 const emits = defineEmits<{ (e: string, value: boolean): void }>()
 let sexOptions = ref<[]>([])
@@ -71,7 +112,7 @@ watch(
   () => props.drawerUser,
   () => {
     editInit()
-  }
+  },
 )
 let formRef = ref<any>()
 //新增用户表单数据
@@ -99,7 +140,7 @@ const editInit = () => {
       phone: props.rowData.phone,
       role: props.rowData.role,
       sexStr,
-      roleStr
+      roleStr,
     })
   } else {
     Object.assign(addUserForm, {
@@ -109,7 +150,7 @@ const editInit = () => {
       rawPassword: '',
       phone: '',
       sex: '',
-      role: ''
+      role: '',
     })
   }
   nextTick(() => {
@@ -120,10 +161,10 @@ const editInit = () => {
 }
 //获取角色列表
 const getSex = () => {
-  Object.entries(Sex).forEach(item => {
+  Object.entries(Sex).forEach((item) => {
     sexOptions.value.push({
       label: item[1],
-      value: item[0]
+      value: item[0],
     })
   })
 }
@@ -132,12 +173,16 @@ const getSex = () => {
 const confirmUserAdd = async () => {
   await formRef.value.validate()
   if (!props.isUpdate) addUserForm.id = ''
-  addUserForm.sex = Object.keys(Sex).find(key => Sex[key] === addUserForm.sexStr);
-  addUserForm.role = Object.keys(UserRole).find(key => UserRole[key] === addUserForm.roleStr);
+  addUserForm.sex = Object.keys(Sex).find(
+    (key) => Sex[key] === addUserForm.sexStr,
+  )
+  addUserForm.role = Object.keys(UserRole).find(
+    (key) => UserRole[key] === addUserForm.roleStr,
+  )
   delete addUserForm.sexStr
   delete addUserForm.roleStr
   let result: any = await reqAddOrUpdateUserData(addUserForm)
-  if (result.code == "000000") {
+  if (result.code == '000000') {
     ElMessage({
       type: 'success',
       message: `${addUserForm.id ? '修改' : '添加'}用户昵称${addUserForm.username}成功!`,
@@ -154,10 +199,9 @@ const confirmUserAdd = async () => {
 }
 
 const cancelUserDrawer = (done: () => void) => {
-  ElMessageBox.confirm('是否关闭当前对话框？')
-    .then(() => {
-      emits('update:drawerUser', false)
-    })
+  ElMessageBox.confirm('是否关闭当前对话框？').then(() => {
+    emits('update:drawerUser', false)
+  })
 }
 
 //校验用户昵称回调函数
@@ -190,7 +234,9 @@ const validatorPhone = (_rule: any, value: any, callBack: any) => {
 const rules = {
   username: [{ required: true, trigger: 'blur', validator: validatorUsername }],
   password: [{ required: true, trigger: 'blur', validator: validatorPassword }],
-  rawPassword: [{ required: true, trigger: 'blur', validator: validatorPassword }]
+  rawPassword: [
+    { required: true, trigger: 'blur', validator: validatorPassword },
+  ],
   // phone: [{ required: true, trigger: 'blur', validator: validatorPhone }],
 }
 </script>

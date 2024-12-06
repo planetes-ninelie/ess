@@ -7,8 +7,8 @@
         </el-form-item>
         <el-form-item label="所属角色">
           <el-select v-model="userSearchDto.role" placeholder="请选择用户所属角色" style="width: 240px">
-            <el-option v-for="item in roleOptions" :key="item.value" :label="item.label" :value="item.value">
-            </el-option>
+            <el-option v-for="item in roleOptions" :key="item.value" :label="item.label"
+              :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -27,9 +27,11 @@
     </header>
 
     <!-- 新增用户或修改用户抽屉 -->
-    <AddUser :drawerUser="drawerUser" @update:drawerUser="(newVal) => { drawerUser = newVal; getHasUser() }"
-      :isUpdate="isUpdate" :rowData="rowData" :roleOptions="roleOptions">
-    </AddUser>
+    <EditStore :drawerUser="drawerUser" @update:drawerUser="(newVal) => {
+      drawerUser = newVal
+      getHasUser()
+    }
+      " :isUpdate="isUpdate" :rowData="rowData" :roleOptions="roleOptions"></EditStore>
 
     <!-- 表格数据 -->
     <el-table border :data="usersData" style="margin-bottom: 10px">
@@ -69,14 +71,12 @@ import {
   reqUsersData,
   reqDeleteById,
   reqDeleteByIdArr,
-} from '@/api/user/index'
-import { UsersData, record, usersListDto } from '@/api/user/type'
+} from '@/api/store/index'
+import { UsersData, record, usersListDto } from '@/api/store/type'
 import { ElMessage, ElTable, ElMessageBox } from 'element-plus'
-import { GetRoleResponseData, RoleRecords } from '@/api/acl/role/type'
-import { getRolesData } from '@/api/acl/role/index'
 import { Sex, UserRole } from '@/utils/constant'
-import { formatDateTime } from '@/utils/time'
-import type { UsersRow } from '@/components/AddUser/type'
+import type { UsersRow } from './EditStore/index.vue'
+import EditStore from './EditStore/index.vue'
 
 //当前页数
 let pageNo = ref<number>(1)
@@ -89,7 +89,7 @@ let usersData = ref<record[]>([])
 //搜索用户
 let userSearchDto = ref<usersListDto>({
   username: '',
-  role: ''
+  role: '',
 })
 // 角色列表
 let roleOptions = ref<string[]>([])
@@ -111,7 +111,7 @@ const getHasUser = async () => {
     username: userSearchDto.value.username,
     role: userSearchDto.value.role,
     page: pageNo.value,
-    pageSize: pageSize.value
+    pageSize: pageSize.value,
   }
   let result: UsersData = await reqUsersData(data)
   if (result.code == 0) {
@@ -133,12 +133,12 @@ const search = async () => getHasUser()
 const getRoles = () => {
   roleOptions.value.push({
     label: '未选择',
-    value: ''
+    value: '',
   })
-  Object.entries(UserRole).forEach(item => {
+  Object.entries(UserRole).forEach((item) => {
     roleOptions.value.push({
       label: item[1],
-      value: item[0]
+      value: item[0],
     })
   })
 }
@@ -151,9 +151,9 @@ const getUsersData = (records: record[]) => {
     return {
       ...record,
       sexStr,
-      roleStr
+      roleStr,
     }
-  });
+  })
 }
 
 // 添加/编辑按钮
@@ -169,7 +169,7 @@ const reset = () => {
     username: '',
     role: '',
     currentPage: pageNo.value,
-    pageSize: pageSize.value
+    pageSize: pageSize.value,
   })
 }
 
@@ -189,7 +189,6 @@ const deleteUser = async (row: any) => {
     })
   }
 }
-
 </script>
 
 <style scoped lang="scss">

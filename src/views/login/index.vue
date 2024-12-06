@@ -1,14 +1,31 @@
 <template>
   <div class="login_container">
     <transition name="el-zoom-in-center">
-      <el-form class="login_form" :model="loginForm" :rules="rules" ref="loginForms" v-show="isLogin">
+      <el-form
+        class="login_form"
+        :model="loginForm"
+        :rules="rules"
+        ref="loginForms"
+        v-show="isLogin"
+      >
         <h1>{{ title }}</h1>
         <el-form-item class="item" prop="username">
-          <el-input class="input" :prefix-icon="User" placeholder="请输入账号" v-model="loginForm.username"></el-input>
+          <el-input
+            class="input"
+            :prefix-icon="User"
+            placeholder="请输入账号"
+            v-model="loginForm.username"
+          ></el-input>
         </el-form-item>
         <el-form-item class="item" prop="password">
-          <el-input class="input" type="password" placeholder="请输入密码" :prefix-icon="Lock" v-model="loginForm.password"
-            show-password></el-input>
+          <el-input
+            class="input"
+            type="password"
+            placeholder="请输入密码"
+            :prefix-icon="Lock"
+            v-model="loginForm.password"
+            show-password
+          ></el-input>
         </el-form-item>
         <!-- <el-form-item class="item-select">
           <el-col :span="12" class="col-left">
@@ -19,7 +36,12 @@
           </el-col>
         </el-form-item> -->
         <el-form-item class="item">
-          <el-button :loading="loading" class="login_btn" size="default" @click="login">
+          <el-button
+            :loading="loading"
+            class="login_btn"
+            size="default"
+            @click="login"
+          >
             登录
           </el-button>
         </el-form-item>
@@ -32,21 +54,49 @@
     </transition>
 
     <transition name="el-zoom-in-center">
-      <el-form class="login_form" :model="registerForm" :rules="rules" ref="loginForms" v-show="!isLogin">
+      <el-form
+        class="login_form"
+        :model="registerForm"
+        :rules="rules"
+        ref="loginForms"
+        v-show="!isLogin"
+      >
         <h2>注册账号</h2>
         <el-form-item class="item" prop="username">
-          <el-input class="input" :prefix-icon="User" placeholder="请输入账号" v-model="registerForm.username"></el-input>
+          <el-input
+            class="input"
+            :prefix-icon="User"
+            placeholder="请输入账号"
+            v-model="registerForm.username"
+          ></el-input>
         </el-form-item>
         <el-form-item class="item" prop="password">
-          <el-input class="input" type="password" placeholder="请输入密码" :prefix-icon="Lock"
-            v-model="registerForm.password" show-password></el-input>
+          <el-input
+            class="input"
+            type="password"
+            placeholder="请输入密码"
+            :prefix-icon="Lock"
+            v-model="registerForm.password"
+            show-password
+          ></el-input>
         </el-form-item>
         <el-form-item class="item" prop="password">
-          <el-input class="input" type="password" placeholder="请再次输入密码" :prefix-icon="Lock"
-            v-model="registerForm.rawPassword" show-password></el-input>
+          <el-input
+            class="input"
+            type="password"
+            placeholder="请再次输入密码"
+            :prefix-icon="Lock"
+            v-model="registerForm.rawPassword"
+            show-password
+          ></el-input>
         </el-form-item>
         <el-form-item class="item">
-          <el-button :loading="loading" class="login_btn" size="default" @click="registerSubmit">
+          <el-button
+            :loading="loading"
+            class="login_btn"
+            size="default"
+            @click="registerSubmit"
+          >
             注册
           </el-button>
         </el-form-item>
@@ -57,7 +107,6 @@
         </el-form-item>
       </el-form>
     </transition>
-
   </div>
 </template>
 
@@ -91,12 +140,12 @@ let isLogin = ref<boolean>(true)
 //收集注册表单
 let registerForm = reactive<record>({
   id: '',
-  username: "",
-  password: "",
-  rawPassword: "",
+  username: '',
+  password: '',
+  rawPassword: '',
   sex: 0,
-  phone: "",
-  role: 3
+  phone: '',
+  role: 3,
 })
 
 //登录按钮回调
@@ -117,7 +166,7 @@ const login = async () => {
     loading.value = false
     ElNotification({
       type: 'error',
-      message: (error as Error)
+      message: error as Error,
     })
   }
 }
@@ -142,14 +191,14 @@ const validatorPassword = (_rule: any, value: any, callback: any) => {
 //定义表单校验需要配置对象
 const rules = {
   username: [{ trigger: 'change', validator: validatorUserName }],
-  password: [{ trigger: 'change', validator: validatorPassword }]
+  password: [{ trigger: 'change', validator: validatorPassword }],
 }
 
 //标题
 const title = import.meta.env.VITE_APP_TITLE
 
 //切换场景
-const register = () => isLogin.value = !isLogin.value
+const register = () => (isLogin.value = !isLogin.value)
 
 //注册
 const registerSubmit = async () => {
@@ -164,9 +213,7 @@ const registerSubmit = async () => {
   } else {
     ElMessage({
       type: 'error',
-      message:
-        res.msg ||
-        `注册用户名${registerForm.username}失败!`,
+      message: res.msg || `注册用户名${registerForm.username}失败!`,
     })
   }
 }
@@ -234,7 +281,6 @@ const registerSubmit = async () => {
   .register {
     display: flex;
     justify-content: flex-end;
-
   }
 
   .login_btn {
@@ -243,7 +289,6 @@ const registerSubmit = async () => {
     color: white;
     font-size: 20px;
     letter-spacing: 5px;
-
 
     &:hover {
       background-color: #1ddddd;
@@ -275,7 +320,7 @@ const registerSubmit = async () => {
   width: 200px;
   height: 100px;
   border-radius: 4px;
-  background-color: #409EFF;
+  background-color: #409eff;
   text-align: center;
   color: #fff;
   padding: 40px 20px;

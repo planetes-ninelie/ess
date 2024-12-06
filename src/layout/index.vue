@@ -30,7 +30,7 @@ import Menu from './menu/index.vue'
 import Main from './main/index.vue'
 import Header from './header/index.vue'
 
-//获取用户相关的小仓库 
+//获取用户相关的小仓库
 import useUserStore from '@/store/modules/user'
 //获取layout相关小仓库
 import useLayOutSettingStore from '@/store/modules/setting'

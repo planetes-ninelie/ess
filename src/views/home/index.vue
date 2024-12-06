@@ -15,7 +15,6 @@
 import setting from '@/setting'
 import useUserStore from '@/store/modules/user'
 import { getTime } from '@/utils/time'
-
 </script>
 
 <style lang="scss">
