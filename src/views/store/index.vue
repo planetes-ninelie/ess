@@ -3,7 +3,7 @@
     <header>
       <el-form :model="userSearchDto" label-width="80px" :inline="true">
         <el-form-item label="商家名称">
-          <el-input type="text" placeholder="请输入商家名称" v-model="userSearchDto.username"></el-input>
+          <el-input type="text" placeholder="请输入商家名称" v-model="userSearchDto.name"></el-input>
         </el-form-item>
         <el-form-item label="商家地址">
           <el-input type="text" placeholder="请输入商家地址" v-model="userSearchDto.address"></el-input>
@@ -35,8 +35,8 @@
       <el-table-column property="id" align="center" label="id" width="100" show-overflow-tooltip />
       <el-table-column property="name" label="商家名" align="center" width="150" show-overflow-tooltip />
       <el-table-column property="description" label="描述" align="center" width="150" show-overflow-tooltip />
-      <el-table-column property="status" label="状态" align="center" width="150" show-overflow-tooltip />
-      <el-table-column property="userIdStr" label="所属用户" align="center" width="150" show-overflow-tooltip />
+      <el-table-column property="statusStr" label="状态" align="center" width="150" show-overflow-tooltip />
+      <el-table-column property="userId" label="所属用户id" align="center" width="150" show-overflow-tooltip />
       <el-table-column property="address" label="地址" align="center" width="150" show-overflow-tooltip />
       <el-table-column label="操作" align="center" width="300" fixed="right">
         <template #="{ row }">
@@ -72,7 +72,7 @@ import {
 } from '@/api/store/index'
 import { UsersData, record, usersListDto } from '@/api/store/type'
 import { ElMessage, ElTable, ElMessageBox } from 'element-plus'
-import { Sex, UserRole } from '@/utils/constant'
+import { StoreStatus, UserRole } from '@/utils/constant'
 import type { UsersRow } from './EditStore/index.vue'
 import EditStore from './EditStore/index.vue'
 
@@ -111,12 +111,14 @@ const getHasUser = async () => {
     page: pageNo.value,
     pageSize: pageSize.value,
   }
-  // let result: UsersData = await reqUsersData(data)
-  // if (result.code == 0) {
-  //   total.value = result.data.total
-  //   usersData.value = getUsersData(result.data.list)
-  //   usersData.value = result.data.list
-  // }
+  let result: UsersData = await reqUsersData(data)
+  if (result.code == 0) {
+    total.value = result.data.total
+    result.data.list.forEach(item => {
+      item.statusStr = StoreStatus[item.status]
+    })
+    usersData.value = result.data.list
+  }
 }
 
 //改变当前页数
@@ -138,10 +140,8 @@ const editUser = (val, row) => {
 //重置列表
 const reset = () => {
   Object.assign(userSearchDto.value, {
-    username: '',
-    role: '',
-    currentPage: pageNo.value,
-    pageSize: pageSize.value,
+    name: '',
+    address: '',
   })
 }
 

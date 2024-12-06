@@ -1,22 +1,22 @@
 <template>
-  <el-dialog v-model="props.drawerUser" :title="props.isUpdate ? '修改商家' : '添加商家'" width="500"
+  <el-dialog v-model="props.drawerUser" :title="props.isUpdate ? '修改菜品' : '添加菜品'" width="500"
     :before-close="cancelUserDrawer" destroy-on-close>
     <template #default>
       <el-form :model="addUserForm" label-width="auto">
-        <el-form-item label="商家名" prop="name">
-          <el-input placeholder="请填写商家名" v-model="addUserForm.name"></el-input>
+        <el-form-item label="菜品名" prop="name">
+          <el-input placeholder="请填写菜品名" v-model="addUserForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="商家简介" prop="description">
-          <el-input type="text" placeholder="请输入商家简介" v-model="addUserForm.description"></el-input>
+        <el-form-item label="菜品简介" prop="description">
+          <el-input type="text" placeholder="请输入菜品简介" v-model="addUserForm.description"></el-input>
         </el-form-item>
-        <el-form-item label="商家状态" prop="status">
-          <el-select v-model="addUserForm.status" placeholder="请输入商家状态" style="width: 240px">
+        <el-form-item label="菜品状态" prop="status">
+          <el-select v-model="addUserForm.status" placeholder="请输入菜品状态" style="width: 240px">
             <el-option v-for="item in statusOptions" :key="item.value" :label="item.label"
               :value="item.label"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="商家地址" prop="address">
-          <el-input type="text" placeholder="请输入商家地址" v-model="addUserForm.address"></el-input>
+        <el-form-item label="菜品地址" prop="address">
+          <el-input type="text" placeholder="请输入菜品地址" v-model="addUserForm.address"></el-input>
         </el-form-item>
       </el-form>
     </template>
@@ -62,7 +62,7 @@ watch(
   },
 )
 let formRef = ref<any>()
-//新增商家表单数据
+//新增菜品表单数据
 let addUserForm = reactive<record>({
   id: '',
   userId: '',
@@ -105,7 +105,7 @@ const getStoreStatus = () => {
   })
 }
 
-//提交新增或修改的商家信息
+//提交新增或修改的菜品信息
 const confirmUserAdd = async () => {
   if (!props.isUpdate) {
     addUserForm.id = ''
@@ -120,7 +120,7 @@ const confirmUserAdd = async () => {
   if (result.code == '000000') {
     ElMessage({
       type: 'success',
-      message: `${addUserForm.id ? '修改' : '添加'}商家昵称${addUserForm.username}成功!`,
+      message: `${addUserForm.id ? '修改' : '添加'}菜品昵称${addUserForm.username}成功!`,
     })
     emits('update:drawerUser', false)
   } else {
@@ -128,7 +128,7 @@ const confirmUserAdd = async () => {
       type: 'error',
       message:
         result.message ||
-        `${addUserForm.id ? '修改' : '添加'}商家昵称${addUserForm.username}失败!`,
+        `${addUserForm.id ? '修改' : '添加'}菜品昵称${addUserForm.username}失败!`,
     })
   }
 }
@@ -138,7 +138,6 @@ const cancelUserDrawer = (done: () => void) => {
     emits('update:drawerUser', false)
   })
 }
-
 </script>
 
 <style lang="scss" scoped></style>

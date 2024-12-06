@@ -18,7 +18,7 @@ export interface loginResponseData extends ResponseData {
   data: record
 }
 
-//定义获取菜品信息返回数据类型
+//定义获取订单信息返回数据类型
 export interface userInfoResponseData extends ResponseData {
   data: {
     routes: string[]
@@ -37,29 +37,31 @@ export interface updateAvatar {
   avatar: string
 }
 
-//获取单个菜品的数据
+//获取单个订单的数据
 export interface record {
-  id: string | number | undefined
+  orderId: string | number | undefined
   userId: string | number
-  name: string
-  description: string
+  businessId: number
+  totalAmount: number
+  paymentStatus: string
+  deliveryAddress: string
+  deliveryFee: number
+  remarks: string
   status: number
   createdAt?: string
   updatedAt?: string
-  address: string
 }
 
-//获取菜品表单数据
+//获取订单表单数据
 export interface UsersData extends pageData<record> {}
 
 export interface UserData extends ResponseData {
   data: record
 }
 
-// 分页查询菜品提交的表单
+// 分页查询订单提交的表单
 export interface StoreListDto {
-  name: string
-  address: number
+  orderStatus: string
   page?: number
   pageSize?: number
 }

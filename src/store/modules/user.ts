@@ -46,7 +46,7 @@ const useUserStore = defineStore('User', {
       const result: loginResponseData = await reqLogin(data)
       if (result.code == 0) {
         const res = result.data
-        SET_INFO(res.id, res.role, res.username)
+        SET_INFO(res.id, res.role, res.username, res.sex, res.phone)
         this.getInfo()
         return 'ok'
       } else {

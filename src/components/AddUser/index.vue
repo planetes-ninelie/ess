@@ -1,71 +1,29 @@
 <template>
-  <el-dialog
-    v-model="props.drawerUser"
-    :title="props.isUpdate ? '修改用户' : '添加用户'"
-    width="500"
-    :before-close="cancelUserDrawer"
-    destroy-on-close
-  >
+  <el-dialog v-model="props.drawerUser" :title="props.isUpdate ? '修改用户' : '添加用户'" width="500"
+    :before-close="cancelUserDrawer" destroy-on-close>
     <template #default>
-      <el-form
-        :model="addUserForm"
-        :rules="rules"
-        ref="formRef"
-        label-width="auto"
-      >
+      <el-form :model="addUserForm" :rules="rules" ref="formRef" label-width="auto">
         <el-form-item label="用户名" prop="username">
-          <el-input
-            placeholder="请填写用户名"
-            v-model="addUserForm.username"
-          ></el-input>
+          <el-input placeholder="请填写用户名" v-model="addUserForm.username"></el-input>
         </el-form-item>
         <el-form-item label="用户密码" prop="password" v-if="!isUpdate">
-          <el-input
-            placeholder="请填写用户密码"
-            v-model="addUserForm.password"
-            type="password"
-          ></el-input>
+          <el-input placeholder="请填写用户密码" v-model="addUserForm.password" type="password"></el-input>
         </el-form-item>
         <el-form-item label="再次输入密码" prop="rawPassword" v-if="!isUpdate">
-          <el-input
-            placeholder="请再次填写用户密码"
-            v-model="addUserForm.rawPassword"
-            type="password"
-          ></el-input>
+          <el-input placeholder="请再次填写用户密码" v-model="addUserForm.rawPassword" type="password"></el-input>
         </el-form-item>
         <el-form-item label="性别">
-          <el-select
-            v-model="addUserForm.sexStr"
-            placeholder="请选择用户性别"
-            style="width: 240px"
-          >
-            <el-option
-              v-for="item in sexOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.label"
-            ></el-option>
+          <el-select v-model="addUserForm.sexStr" placeholder="请选择用户性别" style="width: 240px">
+            <el-option v-for="item in sexOptions" :key="item.value" :label="item.label" :value="item.label"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="用户电话" prop="phone">
-          <el-input
-            type="text"
-            placeholder="请输入用户电话"
-            v-model="addUserForm.phone"
-          ></el-input>
+          <el-input type="text" placeholder="请输入用户电话" v-model="addUserForm.phone"></el-input>
         </el-form-item>
         <el-form-item label="所属角色">
-          <el-select
-            v-model="addUserForm.roleStr"
-            placeholder="请选择用户所属角色"
-            style="width: 240px"
-          >
-            <el-option
-              v-for="item in props.roleOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.label"
-            ></el-option>
+          <el-select v-model="addUserForm.roleStr" placeholder="请选择用户所属角色" style="width: 240px">
+            <el-option v-for="item in props.roleOptions" :key="item.value" :label="item.label"
+              :value="item.label"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -85,6 +43,12 @@ import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted, nextTick, watch } from 'vue'
 import { record } from '@/api/user/type'
 import { Sex, UserRole } from '@/utils/constant'
+import useUserStore from '@/store/modules/user'
+import pinia from '@/store'
+import { useRouter, useRoute } from 'vue-router'
+//获取路由器对象
+let $router = useRouter()
+const userStore = useUserStore(pinia)
 const props = defineProps({
   drawerUser: {
     type: Boolean,
@@ -172,7 +136,11 @@ const getSex = () => {
 //提交新增或修改的用户信息
 const confirmUserAdd = async () => {
   await formRef.value.validate()
-  if (!props.isUpdate) addUserForm.id = ''
+  if (!props.isUpdate) {
+    addUserForm.id = ''
+    delete addUserForm.password
+    delete addUserForm.rawPassword
+  }
   addUserForm.sex = Object.keys(Sex).find(
     (key) => Sex[key] === addUserForm.sexStr,
   )
@@ -182,12 +150,18 @@ const confirmUserAdd = async () => {
   delete addUserForm.sexStr
   delete addUserForm.roleStr
   let result: any = await reqAddOrUpdateUserData(addUserForm)
-  if (result.code == '000000') {
+  if (result.code == 0) {
     ElMessage({
       type: 'success',
       message: `${addUserForm.id ? '修改' : '添加'}用户昵称${addUserForm.username}成功!`,
     })
     emits('update:drawerUser', false)
+    if (addUserForm.id == sessionStorage.getItem('INFO')) {
+      await userStore.userLogout()
+      $router.push({
+        path: '/login'
+      })
+    }
   } else {
     ElMessage({
       type: 'error',

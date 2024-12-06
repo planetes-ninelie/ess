@@ -1,22 +1,22 @@
 <template>
-  <el-dialog v-model="props.drawerUser" :title="props.isUpdate ? '修改上商家' : '添加上商家'" width="500"
+  <el-dialog v-model="props.drawerUser" :title="props.isUpdate ? '修改订单' : '添加订单'" width="500"
     :before-close="cancelUserDrawer" destroy-on-close>
     <template #default>
       <el-form :model="addUserForm" label-width="auto">
-        <el-form-item label="上商家名" prop="name">
-          <el-input placeholder="请填写上商家名" v-model="addUserForm.name"></el-input>
+        <el-form-item label="订单名" prop="name">
+          <el-input placeholder="请填写订单名" v-model="addUserForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="上商家简介" prop="description">
-          <el-input type="text" placeholder="请输入上商家简介" v-model="addUserForm.description"></el-input>
+        <el-form-item label="订单简介" prop="description">
+          <el-input type="text" placeholder="请输入订单简介" v-model="addUserForm.description"></el-input>
         </el-form-item>
-        <el-form-item label="上商家状态" prop="statusStr">
-          <el-select v-model="addUserForm.statusStr" placeholder="请输入上商家状态" style="width: 240px">
+        <el-form-item label="订单状态" prop="status">
+          <el-select v-model="addUserForm.status" placeholder="请输入订单状态" style="width: 240px">
             <el-option v-for="item in statusOptions" :key="item.value" :label="item.label"
               :value="item.label"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="上商家地址" prop="address">
-          <el-input type="text" placeholder="请输入上商家地址" v-model="addUserForm.address"></el-input>
+        <el-form-item label="订单地址" prop="address">
+          <el-input type="text" placeholder="请输入订单地址" v-model="addUserForm.address"></el-input>
         </el-form-item>
       </el-form>
     </template>
@@ -30,11 +30,10 @@
 </template>
 
 <script setup lang="ts">
-import { reqAddOrUpdateUserData } from '@/api/store/index'
+import { reqAddOrUpdateUserData } from '@/api/order/index'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted, nextTick, watch } from 'vue'
-import { record } from '@/api/store/type'
-import { StoreStatus, UserRole } from '@/utils/constant'
+import { record } from '@/api/order/type'
 import { GET_INFO } from '@/utils/token'
 const props = defineProps({
   drawerUser: {
@@ -53,7 +52,7 @@ const props = defineProps({
 const emits = defineEmits<{ (e: string, value: boolean): void }>()
 let statusOptions = ref<[]>([])
 onMounted(() => {
-  getStoreStatus()
+  // getorderStatus()
 })
 watch(
   () => props.drawerUser,
@@ -62,7 +61,7 @@ watch(
   },
 )
 let formRef = ref<any>()
-//新增上商家表单数据
+//新增订单表单数据
 let addUserForm = reactive<record>({
   id: '',
   userId: '',
@@ -75,14 +74,13 @@ let addUserForm = reactive<record>({
 //初始化表单
 const editInit = () => {
   if (props.isUpdate) {
-    const status = StoreStatus[props.rowData.status]
+    const status = Sex[props.rowData.status]
     Object.assign(addUserForm, {
       id: props.rowData.id,
       userId: props.rowData.userId,
       name: props.rowData.name,
       description: props.rowData.description,
-      statusStr: props.rowData.statusStr,
-      status: '',
+      status: props.rowData.status,
       address: props.rowData.address,
     })
   } else {
@@ -97,30 +95,31 @@ const editInit = () => {
   }
 }
 //获取状态列表
-const getStoreStatus = () => {
-  Object.entries(StoreStatus).forEach((item) => {
-    statusOptions.value.push({
-      label: item[1],
-      value: item[0],
-    })
-  })
-}
+// const getorderStatus = () => {
+//   Object.entries(orderStatus).forEach((item) => {
+//     statusOptions.value.push({
+//       label: item[1],
+//       value: item[0],
+//     })
+//   })
+// }
 
-//提交新增或修改的上商家信息
+//提交新增或修改的订单信息
 const confirmUserAdd = async () => {
   if (!props.isUpdate) {
     addUserForm.id = ''
     addUserForm.userId = GET_INFO()
   }
-  addUserForm.status = Object.keys(StoreStatus).find(
-    (key) => StoreStatus[key] === addUserForm.statusStr,
+  addUserForm.status = Object.keys(orderStatus).find(
+    (key) => orderStatus[key] === addUserForm.status,
   )
-  delete addUserForm.statusStr
+  delete addUserForm.orderStr
+
   let result: any = await reqAddOrUpdateUserData(addUserForm)
   if (result.code == '000000') {
     ElMessage({
       type: 'success',
-      message: `${addUserForm.id ? '修改' : '添加'}商家${addUserForm.name}成功!`,
+      message: `${addUserForm.id ? '修改' : '添加'}订单昵称${addUserForm.username}成功!`,
     })
     emits('update:drawerUser', false)
   } else {
@@ -128,7 +127,7 @@ const confirmUserAdd = async () => {
       type: 'error',
       message:
         result.message ||
-        `${addUserForm.id ? '修改' : '添加'}商家${addUserForm.name}失败!`,
+        `${addUserForm.id ? '修改' : '添加'}订单昵称${addUserForm.username}失败!`,
     })
   }
 }
