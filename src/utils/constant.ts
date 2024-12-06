@@ -11,3 +11,9 @@ export const Sex = {
   0: '男',
   1: '女',
 }
+
+//商家状态
+export const StoreStatus = {
+  0: '停业',
+  1: '正常',
+}

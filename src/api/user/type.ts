@@ -53,12 +53,6 @@ export interface record {
 //获取用户表单数据
 export interface UsersData extends pageData<record> {}
 
-//用户分配角色提交表单数据
-export interface toAssignData {
-  roleIdList: number[]
-  userId: number | string
-}
-
 export interface UserData extends ResponseData {
   data: record
 }
