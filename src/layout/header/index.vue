@@ -7,7 +7,7 @@
 
     <el-dropdown>
       <span class="el-dropdown-link right">
-        欢迎：{{ role }}
+        欢迎：{{ role }} {{ username }}
         <el-icon class="el-icon--right">
           <arrow-down />
         </el-icon>
@@ -20,10 +20,17 @@
       </template>
     </el-dropdown>
     <!-- 新增用户或修改用户抽屉 -->
-    <AddUser :drawerUser="drawerUser" @update:drawerUser="(newVal) => {
-      drawerUser = newVal
-    }
-      " :isUpdate="true" :rowData="rowData" :roleOptions="roleOptions"></AddUser>
+    <AddUser
+      :drawerUser="drawerUser"
+      @update:drawerUser="
+        (newVal) => {
+          drawerUser = newVal
+        }
+      "
+      :isUpdate="true"
+      :rowData="rowData"
+      :roleOptions="roleOptions"
+    ></AddUser>
   </div>
 </template>
 
@@ -43,6 +50,7 @@ let drawerUser = ref<boolean>(false)
 let rowData = ref()
 let roleOptions = ref<[]>([])
 let role = ref<string>('')
+let username = ref<string>('')
 watch(
   () => drawerUser.value,
   () => {
@@ -54,6 +62,7 @@ onMounted(() => init())
 const init = () => {
   const roleId = GET_USER().role
   role.value = UserRole[roleId]
+  username.value = GET_USER().username
 }
 const logout = async () => {
   await userStore.userLogout()

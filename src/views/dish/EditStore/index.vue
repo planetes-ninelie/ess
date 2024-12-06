@@ -1,22 +1,52 @@
 <template>
-  <el-dialog v-model="props.drawerUser" :title="props.isUpdate ? '修改菜品' : '添加菜品'" width="500"
-    :before-close="cancelUserDrawer" destroy-on-close>
+  <el-dialog
+    v-model="props.drawerUser"
+    :title="props.isUpdate ? '修改菜品' : '添加菜品'"
+    width="500"
+    :before-close="cancelUserDrawer"
+    destroy-on-close
+  >
     <template #default>
       <el-form :model="addUserForm" label-width="auto">
         <el-form-item label="菜品名" prop="name">
-          <el-input placeholder="请填写菜品名" v-model="addUserForm.name"></el-input>
+          <el-input
+            placeholder="请填写菜品名"
+            v-model="addUserForm.name"
+          ></el-input>
         </el-form-item>
         <el-form-item label="菜品价格" prop="price">
-          <el-input type="number" placeholder="请输入菜品价格" v-model="addUserForm.price"></el-input>
+          <el-input
+            type="number"
+            placeholder="请输入菜品价格"
+            v-model="addUserForm.price"
+          ></el-input>
         </el-form-item>
         <el-form-item label="菜品商家" prop="status">
-          <el-select v-model="addUserForm.shopId" placeholder="请输入菜品所属商家" style="width: 180px">
-            <el-option v-for="item in props.stores" :key="item" :label="item" :value="item"></el-option>
+          <el-select
+            v-model="addUserForm.shopId"
+            placeholder="请输入菜品所属商家"
+            style="width: 180px"
+          >
+            <el-option
+              v-for="item in props.stores"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="菜品状态" prop="status">
-          <el-select v-model="addUserForm.status" placeholder="请选择菜品状态" style="width: 180px">
-            <el-option v-for="item in status" :key="item" :label="item" :value="item"></el-option>
+          <el-select
+            v-model="addUserForm.status"
+            placeholder="请选择菜品状态"
+            style="width: 180px"
+          >
+            <el-option
+              v-for="item in status"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -31,10 +61,10 @@
 </template>
 
 <script setup lang="ts">
-import { reqAddOrUpdateUserData } from '@/api/store/index'
+import { reqAddOrUpdateUserData } from '@/api/dish/index'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import { ref, reactive, onMounted, nextTick, watch } from 'vue'
-import { record } from '@/api/store/type'
+import { record } from '@/api/dish/type'
 import { StoreStatus, UserRole } from '@/utils/constant'
 import { GET_INFO } from '@/utils/token'
 const props = defineProps({
@@ -52,11 +82,11 @@ const props = defineProps({
   },
   stores: {
     type: Array,
-    require: false
-  }
+    require: false,
+  },
 })
 const emits = defineEmits<{ (e: string, value: boolean): void }>()
-let status = ref<[]>(['下架', '上架'])
+let status = ref<[]>(['已下架', '已上架'])
 
 watch(
   () => props.drawerUser,
@@ -72,16 +102,17 @@ let addUserForm = reactive<record>({
   shopId: '',
   price: '',
   dishImg: '',
-  status: ''
+  status: '',
 })
 
 //初始化表单
 const editInit = () => {
   if (props.isUpdate) {
+    const statusStr = status.value[props.rowData.status]
     Object.assign(addUserForm, {
       id: props.rowData.id,
       name: props.rowData.name,
-      status: props.rowData.status,
+      status: statusStr,
       shopId: props.rowData.shopId,
       price: props.rowData.price,
       dishImg: '',
@@ -93,7 +124,7 @@ const editInit = () => {
       shopId: '',
       price: '',
       dishImg: '',
-      status: ''
+      status: '',
     })
   }
 }
@@ -104,7 +135,7 @@ const confirmUserAdd = async () => {
     addUserForm.id = ''
     addUserForm.userId = GET_INFO()
   }
-
+  addUserForm.status = addUserForm.status == '已下架' ? 0 : 1
   let result: any = await reqAddOrUpdateUserData(addUserForm)
   if (result.code == 0) {
     ElMessage({

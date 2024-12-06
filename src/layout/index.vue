@@ -55,6 +55,9 @@ export default {
   height: 100vh;
 
   .el-header {
+    top: 0;
+    position: sticky;
+    z-index: 999;
     background-color: #00aaff;
   }
 }

@@ -1,7 +1,34 @@
 <template>
+  <!-- <el-dialog v-model="props.drawerUser" :title="props.isUpdate ? '修改订单' : '添加订单'" width="500"
+    :before-close="cancelUserDrawer" destroy-on-close>
+    <template #default>
+      <el-form :model="addUserForm" label-width="auto">
+        <el-form-item label="订单名" prop="name">
+          <el-input placeholder="请填写订单名" v-model="addUserForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="订单简介" prop="description">
+          <el-input type="text" placeholder="请输入订单简介" v-model="addUserForm.description"></el-input>
+        </el-form-item>
+        <el-form-item label="订单状态" prop="status">
+          <el-select v-model="addUserForm.status" placeholder="请输入订单状态" style="width: 240px">
+            <el-option v-for="item in props.status" :key="item" :label="item" :value="item.label"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="订单地址" prop="address">
+          <el-input type="text" placeholder="请输入订单地址" v-model="addUserForm.address"></el-input>
+        </el-form-item>
+      </el-form>
+    </template>
+<template #footer>
+      <div style="flex: auto">
+        <el-button @click="cancelUserDrawer">取消</el-button>
+        <el-button type="primary" @click="confirmUserAdd">提交</el-button>
+      </div>
+    </template>
+</el-dialog> -->
   <el-dialog
     v-model="props.drawerUser"
-    :title="props.isUpdate ? '修改订单' : '添加订单'"
+    title="修改状态"
     width="500"
     :before-close="cancelUserDrawer"
     destroy-on-close
@@ -12,13 +39,7 @@
           <el-input
             placeholder="请填写订单名"
             v-model="addUserForm.name"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="订单简介" prop="description">
-          <el-input
-            type="text"
-            placeholder="请输入订单简介"
-            v-model="addUserForm.description"
+            disabled="true"
           ></el-input>
         </el-form-item>
         <el-form-item label="订单状态" prop="status">
@@ -28,19 +49,12 @@
             style="width: 240px"
           >
             <el-option
-              v-for="item in statusOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.label"
+              v-for="item in props.status"
+              :key="item"
+              :label="item"
+              :value="item"
             ></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="订单地址" prop="address">
-          <el-input
-            type="text"
-            placeholder="请输入订单地址"
-            v-model="addUserForm.address"
-          ></el-input>
         </el-form-item>
       </el-form>
     </template>
@@ -72,12 +86,14 @@ const props = defineProps({
     type: Object,
     require: false,
   },
+  status: {
+    type: Array,
+    require: false,
+  },
 })
 const emits = defineEmits<{ (e: string, value: boolean): void }>()
-let statusOptions = ref<[]>([])
-onMounted(() => {
-  // getorderStatus()
-})
+
+onMounted(() => {})
 watch(
   () => props.drawerUser,
   () => {
@@ -98,7 +114,6 @@ let addUserForm = reactive<record>({
 //初始化表单
 const editInit = () => {
   if (props.isUpdate) {
-    const status = Sex[props.rowData.status]
     Object.assign(addUserForm, {
       id: props.rowData.id,
       userId: props.rowData.userId,
@@ -118,15 +133,6 @@ const editInit = () => {
     })
   }
 }
-//获取状态列表
-// const getorderStatus = () => {
-//   Object.entries(orderStatus).forEach((item) => {
-//     statusOptions.value.push({
-//       label: item[1],
-//       value: item[0],
-//     })
-//   })
-// }
 
 //提交新增或修改的订单信息
 const confirmUserAdd = async () => {

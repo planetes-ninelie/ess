@@ -15,6 +15,7 @@ import { constantRoute, asyncRoute, anyRoute } from '@/router/routes'
 //引入深拷贝方法
 import cloneDeep from 'lodash/cloneDeep'
 import router from '@/router'
+import { RouteInfo } from '@/utils/constant'
 
 //过滤异步路由的方法
 function filterAsyncRoute(asyncRoute: any, routes: any) {
@@ -55,23 +56,10 @@ const useUserStore = defineStore('User', {
     },
     //获取信息
     async getInfo() {
-      const routesEss = [
-        'User',
-        'Store',
-        'Dish',
-        'Order',
-        'Setting',
-        'UserManage',
-        'StoreManage',
-        'DishManage',
-        'OrderManage',
-        'SettingManage',
-      ]
-      const userAsyncRoutes = filterAsyncRoute(
-        cloneDeep(asyncRoute),
-        // [...(result.data.routes), ...routesTest],
-        [...routesEss],
-      )
+      const routesEss = RouteInfo[GET_ROLE()]
+      const userAsyncRoutes = filterAsyncRoute(cloneDeep(asyncRoute), [
+        ...routesEss,
+      ])
       // const userAsyncRoutes = [...routesTest]
       this.menuRoutes = [...constantRoute, ...userAsyncRoutes, ...anyRoute]
       const routes = [...userAsyncRoutes, ...anyRoute]

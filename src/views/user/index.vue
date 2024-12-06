@@ -13,7 +13,7 @@
           <el-select
             v-model="userSearchDto.role"
             placeholder="请选择用户所属角色"
-            style="width: 240px"
+            style="width: 140px"
           >
             <el-option
               v-for="item in roleOptions"

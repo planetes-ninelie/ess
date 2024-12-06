@@ -108,6 +108,14 @@
           <el-button
             type="primary"
             size="small"
+            icon="Star"
+            @click="recommend(row)"
+          >
+            推荐
+          </el-button>
+          <el-button
+            type="primary"
+            size="small"
             icon="Edit"
             @click="editUser(true, row)"
             v-has="`btn.User.update`"
@@ -163,6 +171,7 @@ import { ElMessage, ElTable, ElMessageBox } from 'element-plus'
 import { StoreStatus, UserRole } from '@/utils/constant'
 import type { UsersRow } from './EditStore/index.vue'
 import EditStore from './EditStore/index.vue'
+import { addRecommendation } from '@/api/setting/index'
 
 //当前页数
 let pageNo = ref<number>(1)
@@ -246,6 +255,28 @@ const deleteUser = async (row: any) => {
     ElMessage({
       type: 'error',
       message: `删除商家${row.username}失败!`,
+    })
+  }
+}
+
+const recommend = async (row) => {
+  const data = {
+    type: 'shop',
+    targetId: row.id,
+    displayOrder: 50,
+  }
+  console.log(data)
+  const res = await addRecommendation(data)
+  if (res.code == 0) {
+    ElMessage({
+      type: 'success',
+      message: `推荐菜品${row.name}成功!`,
+    })
+    getHasUser()
+  } else {
+    ElMessage({
+      type: 'error',
+      message: `推荐菜品${row.name}失败!`,
     })
   }
 }

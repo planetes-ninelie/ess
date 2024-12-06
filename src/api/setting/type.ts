@@ -1,5 +1,4 @@
-//定义用户表行类型
-export interface UsersRow {
+export interface Recommendation {
   id: number
   type: string
   targetId: number

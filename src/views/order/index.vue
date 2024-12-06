@@ -2,30 +2,21 @@
   <div>
     <header>
       <el-form :model="userSearchDto" label-width="80px" :inline="true">
-        <el-form-item label="订单名称">
-          <el-input
-            type="text"
-            placeholder="请输入订单名称"
-            v-model="userSearchDto.username"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="订单地址">
-          <el-input
-            type="text"
-            placeholder="请输入订单地址"
-            v-model="userSearchDto.address"
-          ></el-input>
+        <el-form-item label="订单状态">
+          <el-select
+            v-model="userSearchDto.orderStatus"
+            placeholder="请选择订单状态"
+            style="width: 100px"
+          >
+            <el-option
+              v-for="item in status"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button
-            type="primary"
-            icon="Plus"
-            style="margin-right: 15px"
-            @click="editUser(false, null)"
-            v-has="`btn.User.add`"
-          >
-            添加
-          </el-button>
           <el-button
             type="success"
             icon="Search"
@@ -57,6 +48,7 @@
       "
       :isUpdate="isUpdate"
       :rowData="rowData"
+      :status="status"
     ></EditOrder>
 
     <!-- 表格数据 -->
@@ -195,9 +187,9 @@ let rowData = ref<UsersRow>({})
 //组件挂载初始化
 onMounted(() => {
   getHasUser()
-  //getRoles()
+  status.value = ['待处理', '配送中', '取消', '配送到达']
 })
-
+let status = ref<string[]>([])
 //获取订单数据
 const getHasUser = async () => {
   const data = {

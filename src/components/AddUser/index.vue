@@ -54,7 +54,7 @@
             v-model="addUserForm.phone"
           ></el-input>
         </el-form-item>
-        <el-form-item label="所属角色">
+        <el-form-item label="所属角色" v-if="setRole">
           <el-select
             v-model="addUserForm.roleStr"
             placeholder="请选择用户所属角色"
@@ -111,8 +111,12 @@ const props = defineProps({
 })
 const emits = defineEmits<{ (e: string, value: boolean): void }>()
 let sexOptions = ref<[]>([])
+let setRole = ref<boolean>(false)
 onMounted(() => {
   getSex()
+  if (sessionStorage.getItem('role') == 1) {
+    setRole.value = true
+  }
 })
 watch(
   () => props.drawerUser,

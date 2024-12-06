@@ -20,6 +20,7 @@ export const reqUsersData = (data: StoreListDto) =>
 //新增商家数据接口与更新商家数据接口
 export const reqAddOrUpdateUserData = (data: record) => {
   data.status = +data.status
+  data.price = (+data.price).toFixed(2)
   if (data.id) return request.put<any, any>(API.UPDATEUSERDATA_URL, data)
   else return request.post<any, any>(API.ADDUSERDATA_URL, data)
 }
