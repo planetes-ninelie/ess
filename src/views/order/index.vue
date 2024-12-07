@@ -3,34 +3,15 @@
     <header>
       <el-form :model="userSearchDto" label-width="80px" :inline="true">
         <el-form-item label="订单状态">
-          <el-select
-            v-model="userSearchDto.orderStatus"
-            placeholder="请选择订单状态"
-            style="width: 100px"
-          >
-            <el-option
-              v-for="item in status"
-              :key="item"
-              :label="item"
-              :value="item"
-            ></el-option>
+          <el-select v-model="userSearchDto.orderStatus" placeholder="请选择订单状态" style="width: 100px">
+            <el-option v-for="item in status" :key="item" :label="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button
-            type="success"
-            icon="Search"
-            style="margin-right: 15px"
-            @click="search"
-          >
+          <el-button type="success" icon="Search" style="margin-right: 15px" @click="search">
             搜索
           </el-button>
-          <el-button
-            type="default"
-            icon="Refresh"
-            style="margin-right: 15px"
-            @click="reset"
-          >
+          <el-button type="default" icon="Refresh" style="margin-right: 15px" @click="reset">
             重置
           </el-button>
         </el-form-item>
@@ -38,100 +19,28 @@
     </header>
 
     <!-- 新增订单或修改订单抽屉 -->
-    <EditOrder
-      :drawerUser="drawerUser"
-      @update:drawerUser="
-        (newVal) => {
-          drawerUser = newVal
-          getHasUser()
-        }
-      "
-      :isUpdate="isUpdate"
-      :rowData="rowData"
-      :status="status"
-    ></EditOrder>
+    <EditOrder :drawerUser="drawerUser" @update:drawerUser="(newVal) => {
+      drawerUser = newVal
+      getHasUser()
+    }
+      " :isUpdate="isUpdate" :rowData="rowData" :status="status"></EditOrder>
 
     <!-- 表格数据 -->
     <el-table border :data="usersData" style="margin-bottom: 10px">
-      <el-table-column
-        property="orderId"
-        align="center"
-        label="id"
-        width="100"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        property="userId"
-        label="创建者id"
-        align="center"
-        width="150"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        property="businessId"
-        label="菜品id"
-        align="center"
-        width="150"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        property="totalAmount"
-        label="总金额"
-        align="center"
-        width="150"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        property="deliveryAddress"
-        label="配送地点"
-        align="center"
-        width="150"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        property="deliveryFee"
-        label="配送费"
-        align="center"
-        width="150"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        property="remarks"
-        label="备注"
-        align="center"
-        width="150"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        property="status"
-        label="状态"
-        align="center"
-        width="150"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        property="createdAt"
-        label="创建时间"
-        align="center"
-        width="150"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        property="updatedAt"
-        label="修改时间"
-        align="center"
-        width="150"
-        show-overflow-tooltip
-      />
+      <el-table-column property="orderId" align="center" label="id" width="200" show-overflow-tooltip />
+      <el-table-column property="userId" label="创建者id" align="center" width="150" show-overflow-tooltip />
+      <el-table-column property="businessId" label="菜品id" align="center" width="150" show-overflow-tooltip />
+      <el-table-column property="totalAmount" label="总金额" align="center" width="150" show-overflow-tooltip />
+      <el-table-column property="deliveryAddress" label="配送地点" align="center" width="150" show-overflow-tooltip />
+      <el-table-column property="deliveryFee" label="配送费" align="center" width="150" show-overflow-tooltip />
+      <el-table-column property="remarks" label="备注" align="center" width="150" show-overflow-tooltip />
+      <el-table-column property="orderStatus" label="状态" align="center" width="150" show-overflow-tooltip />
+      <el-table-column property="paymentStatus" label="支付状态" align="center" width="150" show-overflow-tooltip />
+      <!-- <el-table-column property="createdAt" label="创建时间" align="center" width="150" show-overflow-tooltip />
+      <el-table-column property="updatedAt" label="修改时间" align="center" width="150" show-overflow-tooltip /> -->
       <el-table-column label="操作" align="center" width="300" fixed="right">
         <template #="{ row }">
-          <el-button
-            type="primary"
-            size="small"
-            icon="Edit"
-            @click="editUser(true, row)"
-            v-has="`btn.User.update`"
-          >
+          <el-button type="primary" size="small" icon="Edit" @click="editUser(true, row)" v-has="`btn.User.update`">
             编辑
           </el-button>
         </template>
@@ -139,17 +48,9 @@
     </el-table>
 
     <!-- 分页 -->
-    <el-pagination
-      @size-change="changeSize"
-      @current-change="getHasUser()"
-      :pager-count="9"
-      v-model:current-page="pageNo"
-      v-model:page-size="pageSize"
-      :page-sizes="[5, 10, 15, 20]"
-      :background="true"
-      layout="prev, pager, next, jumper, ->, sizes, total"
-      :total="total"
-    />
+    <el-pagination @size-change="changeSize" @current-change="getHasUser()" :pager-count="9"
+      v-model:current-page="pageNo" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20]" :background="true"
+      layout="prev, pager, next, jumper, ->, sizes, total" :total="total" />
   </div>
 </template>
 
@@ -223,10 +124,7 @@ const editUser = (val, row) => {
 //重置列表
 const reset = () => {
   Object.assign(userSearchDto.value, {
-    username: '',
-    role: '',
-    currentPage: pageNo.value,
-    pageSize: pageSize.value,
+    orderStatus: '',
   })
 }
 </script>

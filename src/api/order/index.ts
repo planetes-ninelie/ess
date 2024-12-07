@@ -17,7 +17,7 @@ export const reqUsersData = (data: StoreListDto) =>
 
 //新增订单数据接口与更新订单数据接口
 export const reqAddOrUpdateUserData = (data: record) => {
-  data.status = +data.status
-  if (data.id) return request.put<any, any>(API.UPDATEUSERDATA_URL, data)
+  if (data.orderId) return request.put<any, any>(API.UPDATEUSERDATA_URL, data)
   else return request.post<any, any>(API.ADDUSERDATA_URL, data)
 }
+

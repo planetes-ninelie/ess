@@ -19,29 +19,29 @@ router.beforeEach(async (to: any, _from: any, next: any) => {
   nprogress.start()
   const id = GET_INFO()
   const rule = id !== null && id !== ''
-  SET_INFO(1, 1, 1, 1, 1)
-  await userStore.getInfo()
-  next()
-  // if (rule) {
-  //   if (to.path == '/login') {
-  //     next({ path: '/' })
-  //   } else {
-  //     try {
-  //       await userStore.getInfo()
-  //       next()
-  //       // next({ ...to, replace: true })
-  //     } catch (error) {
-  //       await userStore.userLogout()
-  //       next({ path: '/login', query: { redirect: to.path } })
-  //     }
-  //   }
-  // } else {
-  //   if (to.path == '/login') {
-  //     next()
-  //   } else {
-  //     next({ path: '/login', query: { redirect: to.path } })
-  //   }
-  // }
+  // SET_INFO(1, 1, 1, 1, 1)
+  // await userStore.getInfo()
+  // next()
+  if (rule) {
+    if (to.path == '/login') {
+      next({ path: '/' })
+    } else {
+      try {
+        await userStore.getInfo()
+        next()
+        // next({ ...to, replace: true })
+      } catch (error) {
+        await userStore.userLogout()
+        next({ path: '/login', query: { redirect: to.path } })
+      }
+    }
+  } else {
+    if (to.path == '/login') {
+      next()
+    } else {
+      next({ path: '/login', query: { redirect: to.path } })
+    }
+  }
 })
 
 //全局后置守卫

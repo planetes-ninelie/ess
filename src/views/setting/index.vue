@@ -1,40 +1,31 @@
 <template>
   <div>
     <header>
-      <el-form :model="userSearchDto" label-width="80px" :inline="true">
-        <el-form-item>
-          <el-button
-            type="success"
-            icon="Search"
-            style="margin-right: 15px"
-            @click="search"
-          >
-            刷新
-          </el-button>
-        </el-form-item>
-      </el-form>
+      <div>
+        <el-radio-group v-model="type" style="margin-bottom: 20px">
+          <el-radio-button value="dish">商品推荐</el-radio-button>
+          <el-radio-button value="shop">商家推荐</el-radio-button>
+        </el-radio-group>
+      </div>
+      <el-button type="success" icon="Search" style="margin-left: 15px" @click="search">
+        刷新
+      </el-button>
     </header>
 
-    <el-dialog
-      v-model="drawerUser"
-      title="修改优先级"
-      width="500"
-      :before-close="cancelUserDrawer"
-      destroy-on-close
-    >
+    <el-dialog v-model="drawerUser" title="修改优先级" width="500" :before-close="cancelUserDrawer" destroy-on-close>
       <template #default>
         <el-form :model="addUserForm" label-width="auto">
-          <el-form-item label="推荐类型" prop="type">
-            <el-input v-model="addUserForm.type" disabled="true"></el-input>
+          <el-form-item label="推荐类型">
+            {{ addUserForm.type == 'dish' ? '商品' : '商家' }}
           </el-form-item>
-          <el-form-item label="推荐商家/菜品id" prop="targetId">
-            <el-input v-model="addUserForm.targetId" disabled="true"></el-input>
+          <el-form-item label="推荐商家/菜品id">
+            {{ addUserForm.targetId }}
           </el-form-item>
-          <el-form-item label="推荐度" prop="status">
-            <el-input
-              v-model="addUserForm.displayOrder"
-              placeholder="请输入推荐度"
-            ></el-input>
+          <el-form-item label="推荐商家/菜品名称">
+            {{ addUserForm.shopName }} {{ addUserForm.dishName }}
+          </el-form-item>
+          <el-form-item label="推荐度" prop="displayOrder">
+            <el-input v-model="addUserForm.displayOrder" placeholder="请输入推荐度"></el-input>
           </el-form-item>
         </el-form>
       </template>
@@ -48,106 +39,52 @@
 
     <!-- 表格数据 -->
     <el-table border :data="usersData" style="margin-bottom: 10px">
-      <el-table-column
-        property="id"
-        align="center"
-        label="id"
-        width="100"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        property="type"
-        label="推荐类型"
-        align="center"
-        width="150"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        property="targetId"
-        label="商家/菜品id"
-        align="center"
-        width="150"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        property="createdBy"
-        label="推荐人"
-        align="center"
-        width="150"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        property="createdAt"
-        label="创建时间"
-        align="center"
-        width="150"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        property="updatedAt"
-        label="修改时间"
-        align="center"
-        width="150"
-        show-overflow-tooltip
-      />
+      <el-table-column label="推荐类型" align="center" width="150" show-overflow-tooltip>
+        <template #="{ row }">
+          {{ row.type == 'dish' ? '商品' : '商家' }}
+        </template>
+      </el-table-column>
+      <el-table-column property="targetId" label="商家/菜品id" align="center" width="150" show-overflow-tooltip />
+      <el-table-column label="名称" align="center" width="150" show-overflow-tooltip>
+        <template #="{ row }">
+          {{ row.shopName }} {{ row.dishName }}
+        </template>
+      </el-table-column>
+      <el-table-column property="displayOrder" label="推荐优先级" align="center" width="150" show-overflow-tooltip />
+      <el-table-column property="createdBy" label="推荐人" align="center" width="150" show-overflow-tooltip />
+      <el-table-column property="shopDescription" label="描述" align="center" width="150" show-overflow-tooltip
+        v-if="type == 'shop'" />
       <el-table-column label="操作" align="center" width="300" fixed="right">
         <template #="{ row }">
-          <el-button
-            type="primary"
-            size="small"
-            icon="Edit"
-            @click="editUser(true, row)"
-            v-has="`btn.User.update`"
-          >
-            编辑
+          <el-button type="primary" size="small" icon="Edit" @click="editUser(row)" v-has="`btn.User.update`">
+            修改推荐优先级
           </el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <!-- 分页 -->
-    <el-pagination
-      @size-change="changeSize"
-      @current-change="getHasUser()"
-      :pager-count="9"
-      v-model:current-page="pageNo"
-      v-model:page-size="pageSize"
-      :page-sizes="[5, 10, 15, 20]"
-      :background="true"
-      layout="prev, pager, next, jumper, ->, sizes, total"
-      :total="total"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { nextTick, onMounted, reactive, ref, toRaw, watch } from 'vue'
-import {
-  reqAddOrUpdateUserData,
-  reqToAssign,
-  reqUsersData,
-} from '@/api/order/index'
-import { UsersData, record, StoreListDto } from '@/api/order/type'
 import { ElMessage, ElTable, ElMessageBox } from 'element-plus'
 import { Sex, UserRole } from '@/utils/constant'
 import type { UsersRow } from './type.ts'
+import { getRecommendDish, getRecommendShops, updateRecommendation } from '@/api/setting/index'
 
-//当前页数
-let pageNo = ref<number>(1)
-//每页最大页数
-let pageSize = ref<number>(5)
-//数据总数
-let total = ref<number>(0)
 //订单数据
-let usersData = ref<record[]>([])
-//搜索订单
-let userSearchDto = ref<StoreListDto>({
-  orderStatus: '',
-})
+let usersData = ref<[]>([])
 //控制新增订单或更新订单的抽屉显示与隐藏
 let drawerUser = ref<boolean>(false)
 //行数据
 let rowData = ref<UsersRow>({})
+let type = ref<string>('dish')
+let addUserForm = reactive({
+  type: '',
+  targetId: '',
+  displayOrder: ''
+})
 //组件挂载初始化
 onMounted(() => {
   getHasUser()
@@ -159,93 +96,83 @@ watch(
     editInit()
   },
 )
+watch(
+  () => type.value,
+  () => {
+    console.log(type.value);
+    getHasUser()
+  }
+)
 let status = ref<string[]>([])
 //获取订单数据
 const getHasUser = async () => {
-  const data = {
-    orderStatus: userSearchDto.value.orderStatus,
-    page: pageNo.value,
-    pageSize: pageSize.value,
+  let res = {}
+  if (type.value == 'dish') {
+    res = await getRecommendDish()
+  } else {
+    res = await getRecommendShops()
   }
-  let result: UsersData = await reqUsersData(data)
-  if (result.code == 0) {
-    total.value = result.data.total
-    usersData.value = result.data.list
-  }
-}
-
-//改变当前页数
-const changeSize = () => {
-  pageNo.value = 1
-  getHasUser()
+  usersData.value = res.data
 }
 
 //搜索订单
 const search = async () => getHasUser()
 
 // 添加/编辑按钮
-const editUser = (val, row) => {
+const editUser = (row) => {
   rowData.value = row
+  console.log(rowData.value);
   drawerUser.value = true
-}
-
-//重置列表
-const reset = () => {
-  Object.assign(userSearchDto.value, {
-    username: '',
-    role: '',
-    currentPage: pageNo.value,
-    pageSize: pageSize.value,
-  })
 }
 
 const editInit = () => {
   Object.assign(addUserForm, {
-    id: rowData.id,
-    userId: rowData.userId,
-    name: rowData.name,
-    description: rowData.description,
-    status: rowData.status,
-    address: rowData.address,
+    type: rowData.value.type,
+    targetId: rowData.value.targetId,
+    shopName: rowData.value.shopName,
+    dishName: rowData.value.dishName,
+    displayOrder: rowData.value.displayOrder,
+    id: rowData.value.id || rowData.value.recommendationId
   })
 }
 
 //提交新增或修改的订单信息
 const confirmUserAdd = async () => {
-  if (!props.isUpdate) {
-    addUserForm.id = ''
-    addUserForm.userId = GET_INFO()
+  const data = {
+    id: addUserForm.id,
+    displayOrder: +addUserForm.displayOrder
   }
-  addUserForm.status = Object.keys(orderStatus).find(
-    (key) => orderStatus[key] === addUserForm.status,
-  )
-  delete addUserForm.orderStr
-
-  let result: any = await reqAddOrUpdateUserData(addUserForm)
-  if (result.code == '000000') {
+  let result: any = await updateRecommendation(data)
+  if (result.code == 0) {
     ElMessage({
       type: 'success',
-      message: `${addUserForm.id ? '修改' : '添加'}${addUserForm.username}成功!`,
+      message: `修改成功!`,
     })
-    emits('update:drawerUser', false)
+    drawerUser.value = false
+    getHasUser()
   } else {
     ElMessage({
       type: 'error',
       message:
         result.message ||
-        `${addUserForm.id ? '修改' : '添加'}${addUserForm.username}失败!`,
+        `修改失败!`,
     })
   }
 }
 
 const cancelUserDrawer = (done: () => void) => {
   ElMessageBox.confirm('是否关闭当前对话框？').then(() => {
-    emits('update:drawerUser', false)
+    drawerUser.value = false
   })
 }
 </script>
 
 <style scoped lang="scss">
+header {
+  display: flex;
+  // align-items: center;
+}
+
 .el-form-item__content {
   width: 150px;
   display: inline;
